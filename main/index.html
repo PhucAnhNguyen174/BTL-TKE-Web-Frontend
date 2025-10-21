@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buy and sell cars online - Your trusted vehicle trading platform">
+    <title>AutoTrade - Buy & Sell Cars Online</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+            <!-- Brand Logo -->
+            <a class="navbar-brand" href="#hero">
+                <i class="bi bi-car-front-fill"></i> AutoTrade
+            </a>
+            
+            <!-- Mobile Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#hero">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#featured">Featured Cars</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white ms-lg-2" href="pages/login.html">
+                            <i class="bi bi-person-circle"></i> Login/Register
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold text-white mb-4">
+                        Find Your Dream Car Today
+                    </h1>
+                    <p class="lead text-white mb-4">
+                        Buy, sell, and trade vehicles with confidence. Your trusted platform for quality cars at the best prices.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#featured" class="btn btn-primary btn-lg">
+                            <i class="bi bi-search"></i> Browse Cars
+                        </a>
+                        <a href="pages/sell.html" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-plus-circle"></i> Sell Your Car
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="images/hero-car.svg" alt="Hero Car" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Down Indicator -->
+        <a href="#featured" class="scroll-down">
+            <i class="bi bi-chevron-down"></i>
+        </a>
+    </section>
+
+    <!-- Featured Cars Section -->
+    <section id="featured" class="featured-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Featured Vehicles</h2>
+                <p class="lead text-muted">Explore our handpicked selection of premium cars</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Car Card 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/car1.jpg" class="card-img-top" alt="Luxury Sedan">
+                            <span class="badge bg-primary position-absolute top-0 start-0 m-3">Featured</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Mercedes-Benz E-Class</h5>
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-calendar3"></i> 2023 | 
+                                <i class="bi bi-speedometer2"></i> 15,000 km | 
+                                <i class="bi bi-fuel-pump"></i> Petrol
+                            </p>
+                            <p class="card-text">Luxury sedan with premium features and exceptional performance.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$75,000</h4>
+                                <a href="pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Car Card 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/car2.jpg" class="card-img-top" alt="SUV">
+                            <span class="badge bg-success position-absolute top-0 start-0 m-3">New</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Toyota RAV4 Hybrid</h5>
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-calendar3"></i> 2024 | 
+                                <i class="bi bi-speedometer2"></i> 5,000 km | 
+                                <i class="bi bi-fuel-pump"></i> Hybrid
+                            </p>
+                            <p class="card-text">Eco-friendly SUV with cutting-edge hybrid technology.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$42,500</h4>
+                                <a href="pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Car Card 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/car3.jpg" class="card-img-top" alt="Sports Car">
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-3">Hot Deal</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">BMW M3 Competition</h5>
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-calendar3"></i> 2023 | 
+                                <i class="bi bi-speedometer2"></i> 8,000 km | 
+                                <i class="bi bi-fuel-pump"></i> Petrol
+                            </p>
+                            <p class="card-text">High-performance sports sedan for enthusiasts.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$89,900</h4>
+                                <a href="pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View All Button -->
+            <div class="text-center mt-5">
+                <a href="pages/browse.html" class="btn btn-primary btn-lg">
+                    View All Vehicles <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navigate to Next Section -->
+        <div class="text-center mt-4">
+            <a href="#how-it-works" class="text-decoration-none">
+                <i class="bi bi-chevron-down fs-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">How It Works</h2>
+                <p class="lead text-muted">Simple steps to buy or sell your vehicle</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Step 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="text-center step-card">
+                        <div class="step-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4>Search</h4>
+                        <p class="text-muted">Browse through thousands of verified vehicle listings</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="text-center step-card">
+                        <div class="step-icon bg-success text-white rounded-circle mx-auto mb-3">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <h4>Compare</h4>
+                        <p class="text-muted">Compare prices, features, and seller ratings easily</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="text-center step-card">
+                        <div class="step-icon bg-info text-white rounded-circle mx-auto mb-3">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h4>Connect</h4>
+                        <p class="text-muted">Contact sellers directly through our secure platform</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="text-center step-card">
+                        <div class="step-icon bg-warning text-white rounded-circle mx-auto mb-3">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                        </div>
+                        <h4>Purchase</h4>
+                        <p class="text-muted">Complete the deal with confidence and support</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Buttons -->
+            <div class="text-center mt-5">
+                <a href="#services" class="btn btn-primary btn-lg me-2">
+                    Learn More <i class="bi bi-arrow-right"></i>
+                </a>
+                <a href="pages/register.html" class="btn btn-outline-primary btn-lg">
+                    Get Started
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navigate to Next Section -->
+        <div class="text-center mt-4">
+            <a href="#services" class="text-decoration-none">
+                <i class="bi bi-chevron-down fs-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Our Services</h2>
+                <p class="lead text-muted">Everything you need for a seamless car trading experience</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Service 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-primary mb-3">
+                            <i class="bi bi-shield-check fs-1"></i>
+                        </div>
+                        <h4>Verified Listings</h4>
+                        <p class="text-muted">All vehicles are thoroughly inspected and verified for authenticity</p>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-success mb-3">
+                            <i class="bi bi-cash-coin fs-1"></i>
+                        </div>
+                        <h4>Best Prices</h4>
+                        <p class="text-muted">Competitive pricing with transparent cost breakdown</p>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-info mb-3">
+                            <i class="bi bi-tools fs-1"></i>
+                        </div>
+                        <h4>Maintenance Support</h4>
+                        <p class="text-muted">Post-purchase support and maintenance recommendations</p>
+                    </div>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-warning mb-3">
+                            <i class="bi bi-file-text fs-1"></i>
+                        </div>
+                        <h4>Easy Documentation</h4>
+                        <p class="text-muted">We handle all paperwork and transfer processes</p>
+                    </div>
+                </div>
+                
+                <!-- Service 5 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-danger mb-3">
+                            <i class="bi bi-credit-card fs-1"></i>
+                        </div>
+                        <h4>Financing Options</h4>
+                        <p class="text-muted">Flexible payment plans and loan assistance available</p>
+                    </div>
+                </div>
+                
+                <!-- Service 6 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100 text-center p-4 border-0 shadow-sm">
+                        <div class="service-icon text-primary mb-3">
+                            <i class="bi bi-headset fs-1"></i>
+                        </div>
+                        <h4>24/7 Support</h4>
+                        <p class="text-muted">Round-the-clock customer service for all your queries</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigate to Next Section -->
+        <div class="text-center mt-5">
+            <a href="#testimonials" class="text-decoration-none">
+                <i class="bi bi-chevron-down fs-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">What Our Customers Say</h2>
+                <p class="lead text-muted">Real experiences from satisfied buyers and sellers</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Testimonial 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card testimonial-card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="stars text-warning mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <p class="card-text mb-3">
+                                "Found my dream car at an amazing price! The process was smooth and the team was very helpful throughout."
+                            </p>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary text-white rounded-circle me-3">JD</div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <small class="text-muted">Purchased BMW X5</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card testimonial-card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="stars text-warning mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <p class="card-text mb-3">
+                                "Sold my car in just 3 days! The platform made listing easy and I got a great price. Highly recommend!"
+                            </p>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-success text-white rounded-circle me-3">SM</div>
+                                <div>
+                                    <h6 class="mb-0">Sarah Miller</h6>
+                                    <small class="text-muted">Sold Honda Accord</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card testimonial-card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="stars text-warning mb-3">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </div>
+                            <p class="card-text mb-3">
+                                "Great selection of verified vehicles. The customer support team answered all my questions promptly."
+                            </p>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-info text-white rounded-circle me-3">MJ</div>
+                                <div>
+                                    <h6 class="mb-0">Michael Johnson</h6>
+                                    <small class="text-muted">Purchased Tesla Model 3</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Button -->
+            <div class="text-center mt-5">
+                <a href="pages/testimonials.html" class="btn btn-primary btn-lg">
+                    Read More Reviews <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navigate to Next Section -->
+        <div class="text-center mt-4">
+            <a href="#contact" class="text-decoration-none">
+                <i class="bi bi-chevron-down fs-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Get In Touch</h2>
+                <p class="lead text-muted">Have questions? We're here to help!</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Contact Info -->
+                <div class="col-lg-5">
+                    <div class="contact-info">
+                        <h4 class="mb-4">Contact Information</h4>
+                        
+                        <div class="contact-item d-flex mb-4">
+                            <div class="contact-icon bg-primary text-white rounded me-3">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div>
+                                <h6>Address</h6>
+                                <p class="text-muted mb-0">123 Auto Street, Car City, CC 12345</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item d-flex mb-4">
+                            <div class="contact-icon bg-success text-white rounded me-3">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div>
+                                <h6>Phone</h6>
+                                <p class="text-muted mb-0">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item d-flex mb-4">
+                            <div class="contact-icon bg-info text-white rounded me-3">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div>
+                                <h6>Email</h6>
+                                <p class="text-muted mb-0">support@autotrade.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item d-flex mb-4">
+                            <div class="contact-icon bg-warning text-white rounded me-3">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div>
+                                <h6>Business Hours</h6>
+                                <p class="text-muted mb-0">Mon - Fri: 9:00 AM - 6:00 PM<br>Sat - Sun: 10:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <form id="contactForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="firstName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="lastName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="subject" class="form-label">Subject</label>
+                                        <input type="text" class="form-control" id="subject" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="message" class="form-label">Message</label>
+                                        <textarea class="form-control" id="message" rows="5" required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                                            <i class="bi bi-send"></i> Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Site Map / Quick Links Section -->
+    <section class="sitemap-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row g-4">
+                <!-- About Column -->
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="mb-3">About AutoTrade</h5>
+                    <p class="text-muted">Your trusted platform for buying and selling quality vehicles. We connect buyers and sellers across the nation.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin fs-4"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#hero" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="pages/browse.html" class="text-muted text-decoration-none">Browse Cars</a></li>
+                        <li class="mb-2"><a href="pages/sell.html" class="text-muted text-decoration-none">Sell Your Car</a></li>
+                        <li class="mb-2"><a href="pages/about.html" class="text-muted text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="#contact" class="text-muted text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources Column -->
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="mb-3">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="pages/faq.html" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="pages/blog.html" class="text-muted text-decoration-none">Blog</a></li>
+                        <li class="mb-2"><a href="pages/financing.html" class="text-muted text-decoration-none">Financing</a></li>
+                        <li class="mb-2"><a href="pages/insurance.html" class="text-muted text-decoration-none">Insurance</a></li>
+                        <li class="mb-2"><a href="pages/guides.html" class="text-muted text-decoration-none">Buying Guides</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter Column -->
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="mb-3">Newsletter</h5>
+                    <p class="text-muted">Subscribe to get updates on new listings and special offers.</p>
+                    <form id="newsletterForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-envelope"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-4 bg-black text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 AutoTrade. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="pages/privacy.html" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                    <a href="pages/terms.html" class="text-muted text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>
