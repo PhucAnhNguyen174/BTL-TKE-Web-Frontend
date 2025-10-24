@@ -1,4 +1,4 @@
-# AutoTrade - Car Trading Website
+# LuxAuto - Car Trading Website
 
 ## Project Structure
 

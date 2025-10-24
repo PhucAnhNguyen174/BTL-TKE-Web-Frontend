@@ -1,4 +1,92 @@
 // ===================================
+// Landing Animation Handler
+// ===================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const landingAnimation = document.getElementById('landingAnimation');
+    const navbar = document.getElementById('mainNav');
+    const heroSection = document.getElementById('why-choose-us');
+    let hasScrolled = false;
+    const landingHideThreshold = 1;
+
+    // Ensure the hero section stays hidden until the landing animation is dismissed
+    if (heroSection) {
+        heroSection.classList.remove('section-visible');
+        if (!heroSection.classList.contains('section-hidden')) {
+            heroSection.classList.add('section-hidden');
+        }
+    }
+
+    const revealHeroSection = () => {
+        if (!heroSection) {
+            return;
+        }
+        if (!heroSection.classList.contains('section-visible')) {
+            heroSection.classList.remove('section-hidden');
+            heroSection.classList.add('section-visible');
+        }
+    };
+
+    const resetHeroSection = () => {
+        if (!heroSection) {
+            return;
+        }
+        heroSection.classList.remove('section-visible');
+        if (!heroSection.classList.contains('section-hidden')) {
+            heroSection.classList.add('section-hidden');
+        }
+    };
+
+    // Handle scroll to hide/show landing animation and navbar
+    function handleLandingScroll() {
+        const scrollY = window.scrollY || window.pageYOffset;
+
+        // When user scrolls down from the top
+        if (scrollY > landingHideThreshold && !hasScrolled) {
+            hasScrolled = true;
+            // Hide landing animation and menu button
+            if (landingAnimation) {
+                landingAnimation.classList.add('hidden');
+            }
+            // Show navbar with slide-down animation
+            if (navbar) {
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-visible');
+            }
+            revealHeroSection();
+        }
+        // When user scrolls back to top
+        else if (scrollY <= landingHideThreshold && hasScrolled) {
+            hasScrolled = false;
+            // Show landing animation and menu button
+            if (landingAnimation) {
+                landingAnimation.classList.remove('hidden');
+            }
+            // Hide navbar
+            if (navbar) {
+                navbar.classList.remove('navbar-visible');
+                navbar.classList.add('navbar-hidden');
+            }
+            resetHeroSection();
+        }
+        // Keep navbar visible while scrolling down
+        else if (scrollY > landingHideThreshold) {
+            if (navbar) {
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-visible');
+            }
+            revealHeroSection();
+        }
+    }
+    
+    // Listen for scroll events
+    window.addEventListener('scroll', handleLandingScroll);
+    
+    // Initial check
+    handleLandingScroll();
+});
+
+// ===================================
 // Smooth Scrolling for Navigation Links
 // ===================================
 
@@ -39,37 +127,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===================================
-// Active Navigation Link Highlighting
+// Current Page Navigation Highlight
 // ===================================
 
-function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let currentSection = '';
-    const scrollPosition = window.scrollY + 100;
-    
-    // Find which section is currently in view
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            currentSection = section.getAttribute('id');
-        }
-    });
-    
-    // Update active class on navigation links
+function highlightCurrentPageNav() {
+    const navLinks = document.querySelectorAll('#mainNav .nav-link');
+    if (!navLinks.length) {
+        return;
+    }
+
+    const path = window.location.pathname;
+    const fileName = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+    let matched = false;
+
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${currentSection}`) {
-            link.classList.add('active');
+        const isMatch = link.dataset.page === fileName;
+        link.classList.remove('nav-current-page', 'active');
+        if (isMatch) {
+            link.classList.add('nav-current-page', 'active');
+            matched = true;
         }
     });
+
+    if (!matched && fileName === 'index.html') {
+        const homeLink = document.querySelector('#mainNav .nav-link[data-page="index.html"]');
+        if (homeLink) {
+            homeLink.classList.add('nav-current-page', 'active');
+        }
+    }
 }
 
-// Call function on scroll
-window.addEventListener('scroll', updateActiveNavLink);
+document.addEventListener('DOMContentLoaded', highlightCurrentPageNav);
+window.addEventListener('pageshow', highlightCurrentPageNav);
 
 // ===================================
 // Navbar Background Change on Scroll
@@ -79,10 +168,10 @@ function handleNavbarScroll() {
     const navbar = document.querySelector('.navbar');
     
     if (window.scrollY > 50) {
-        navbar.style.backgroundColor = 'rgba(33, 37, 41, 0.95)';
+        navbar.style.backgroundColor = 'rgb(18, 18, 18)';
         navbar.style.backdropFilter = 'blur(10px)';
     } else {
-        navbar.style.backgroundColor = 'rgba(33, 37, 41, 1)';
+        navbar.style.backgroundColor = 'rgb(18, 18, 18)';
         navbar.style.backdropFilter = 'none';
     }
 }
@@ -94,6 +183,9 @@ window.addEventListener('scroll', handleNavbarScroll);
 // ===================================
 
 const backToTopButton = document.getElementById('backToTop');
+
+// Track custom landing filter dropdowns so we can orchestrate their open/close states
+const filterDropdownRegistry = [];
 
 function toggleBackToTopButton() {
     if (window.scrollY > 300) {
@@ -186,40 +278,255 @@ carCards.forEach(card => {
 });
 
 // ===================================
-// Scroll Reveal Animation
+// Section Menu & Reveal Animations
 // ===================================
 
-function revealOnScroll() {
-    const reveals = document.querySelectorAll('.card, .step-card, .service-card, .testimonial-card');
-    
-    reveals.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        const revealPoint = 150;
-        
-        if (elementTop < windowHeight - revealPoint) {
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
+document.addEventListener('DOMContentLoaded', function() {
+    const menuPanel = document.getElementById('sectionMenuPanel');
+    const menuList = document.getElementById('sectionMenuList');
+    const menuCloseBtn = document.getElementById('sectionMenuClose');
+    const menuTriggers = document.querySelectorAll('.nav-menu-trigger');
+    const navbarMenuBtn = document.getElementById('landingMenuBtn');
+    const sectionNodes = Array.from(document.querySelectorAll('section[id]'));
+    let menuAnchorElement = null;
+
+    if (menuPanel && menuList) {
+        const menuItems = [];
+
+        const landingSection = document.getElementById('landingAnimation');
+        if (landingSection) {
+            menuItems.push({ label: 'Home', target: '#landingAnimation' });
+        }
+
+        sectionNodes.forEach(section => {
+            if (section.id === 'landingAnimation') {
+                return;
+            }
+            const heading = section.querySelector('h2, h3, h4, h5');
+            const label = heading ? heading.textContent.trim() : section.id.replace(/-/g, ' ');
+            menuItems.push({ label, target: `#${section.id}` });
+        });
+
+        menuList.innerHTML = '';
+
+        function smoothScrollTo(targetSelector) {
+            const targetElement = document.querySelector(targetSelector);
+            if (!targetElement) {
+                return;
+            }
+            const navbar = document.querySelector('.navbar');
+            const navbarHeight = navbar ? navbar.offsetHeight : 0;
+            const innerHeading = targetElement.querySelector('h1, h2, h3, h4, h5, h6');
+            const scrollAnchor = innerHeading || targetElement;
+            const anchorTop = scrollAnchor.getBoundingClientRect().top + window.pageYOffset;
+            const spacingOffset = innerHeading ? 32 : 16;
+            const finalPosition = Math.max(anchorTop - navbarHeight - spacingOffset, 0);
+            window.scrollTo({ top: finalPosition, behavior: 'smooth' });
+        }
+
+        menuItems.forEach(item => {
+            const listItem = document.createElement('li');
+            const anchor = document.createElement('a');
+            anchor.href = item.target;
+            anchor.innerHTML = `<span>${item.label}</span><i class="bi bi-arrow-right-short"></i>`;
+            anchor.addEventListener('click', function(event) {
+                event.preventDefault();
+                closeMenu();
+                if (item.target === '#landingAnimation') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    smoothScrollTo(item.target);
+                }
+            });
+            listItem.appendChild(anchor);
+            menuList.appendChild(listItem);
+        });
+    }
+
+    let menuOpen = false;
+
+    function positionMenuPanel(anchorElement) {
+        if (!menuPanel || !anchorElement) {
+            return;
+        }
+        const anchorRect = anchorElement.getBoundingClientRect();
+        const panelWidth = menuPanel.offsetWidth || 0;
+        const viewportWidth = window.innerWidth;
+        const horizontalPadding = 16;
+        const maxLeft = viewportWidth - panelWidth - horizontalPadding;
+        const computedLeft = Math.max(horizontalPadding, Math.min(anchorRect.left, maxLeft));
+        menuPanel.style.left = `${computedLeft}px`;
+        menuPanel.style.top = `${anchorRect.bottom + 12}px`;
+    }
+
+    function setTriggersExpanded(state) {
+        menuTriggers.forEach(trigger => {
+            trigger.setAttribute('aria-expanded', state);
+        });
+    }
+
+    function openMenu() {
+        if (!menuPanel) {
+            return;
+        }
+        positionMenuPanel(menuAnchorElement || navbarMenuBtn || menuTriggers[0]);
+        menuPanel.classList.add('open');
+        menuPanel.setAttribute('aria-hidden', 'false');
+        menuOpen = true;
+        setTriggersExpanded('true');
+    }
+
+    function closeMenu() {
+        if (!menuPanel) {
+            return;
+        }
+        menuPanel.classList.remove('open');
+        menuPanel.setAttribute('aria-hidden', 'true');
+        menuOpen = false;
+        setTriggersExpanded('false');
+    }
+
+    function toggleMenu() {
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
+    menuTriggers.forEach(trigger => {
+        trigger.addEventListener('click', function(event) {
+            event.preventDefault();
+            menuAnchorElement = event.currentTarget;
+            toggleMenu();
+        });
+    });
+
+    if (menuCloseBtn) {
+        menuCloseBtn.addEventListener('click', closeMenu);
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!menuOpen || !menuPanel) {
+            return;
+        }
+        const clickedInsidePanel = menuPanel.contains(event.target);
+        const clickedTrigger = Array.from(menuTriggers).some(trigger => trigger.contains(event.target));
+        if (!clickedInsidePanel && !clickedTrigger) {
+            closeMenu();
         }
     });
-}
 
-// Initialize elements for animation
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.card, .step-card, .service-card, .testimonial-card');
-    
-    animatedElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'all 0.6s ease';
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && menuOpen) {
+            closeMenu();
+        }
     });
+
+    window.addEventListener('resize', function() {
+        if (menuOpen) {
+            positionMenuPanel(menuAnchorElement || navbarMenuBtn || menuTriggers[0]);
+        }
+    });
+
+    if (navbarMenuBtn && !navbarMenuBtn.hasAttribute('aria-expanded')) {
+        navbarMenuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    // Intersection Observer for sections
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.remove('section-hidden');
+                entry.target.classList.add('section-visible');
+                sectionObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.25,
+        rootMargin: '0px 0px -10% 0px'
+    });
+
+    const manualRevealSections = new Set(['why-choose-us']);
+
+    sectionNodes.forEach(section => {
+        if (!section.classList.contains('section-transition')) {
+            return;
+        }
+        if (manualRevealSections.has(section.id)) {
+            section.classList.remove('section-visible');
+            if (!section.classList.contains('section-hidden')) {
+                section.classList.add('section-hidden');
+            }
+            return;
+        }
+        if (!section.classList.contains('section-hidden')) {
+            section.classList.add('section-hidden');
+        }
+        sectionObserver.observe(section);
+    });
+
+    // Intersection Observer for cards and feature elements
+    const revealTargets = document.querySelectorAll('.card, .stat-card, .partner-card, .blog-card, .testimonial-card, .feature-card, .selling-step, .selling-benefits-card, .benefit-item, .contact-item');
+
+    const elementObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal-visible');
+                entry.target.classList.remove('reveal-ready');
+                elementObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -10% 0px'
+    });
+
+    revealTargets.forEach(target => {
+        target.classList.add('reveal-ready');
+        elementObserver.observe(target);
+    });
+
+    // FAQ ripple feedback
+    const faqButtons = document.querySelectorAll('#faq .accordion-button');
+    faqButtons.forEach(button => {
+        const triggerRipple = () => {
+            button.classList.remove('ripple-active');
+            void button.offsetWidth;
+            button.classList.add('ripple-active');
+            setTimeout(() => {
+                button.classList.remove('ripple-active');
+            }, 650);
+        };
+
+        button.addEventListener('click', triggerRipple);
+        button.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                triggerRipple();
+            }
+        });
+    });
+
+    const faqAccordion = document.getElementById('faqAccordion');
+    if (faqAccordion) {
+        faqAccordion.addEventListener('show.bs.collapse', event => {
+            const answer = event.target.querySelector('.faq-answer');
+            if (!answer) {
+                return;
+            }
+            answer.classList.remove('faq-answer-visible');
+            void answer.offsetWidth;
+            answer.classList.add('faq-answer-visible');
+        });
+
+        faqAccordion.addEventListener('hide.bs.collapse', event => {
+            const answer = event.target.querySelector('.faq-answer');
+            if (answer) {
+                answer.classList.remove('faq-answer-visible');
+            }
+        });
+    }
 });
-
-// Trigger animation on scroll
-window.addEventListener('scroll', revealOnScroll);
-
-// Trigger animation on page load
-window.addEventListener('load', revealOnScroll);
 
 // ===================================
 // Loading Indicator for External Links
@@ -246,7 +553,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const footer = document.querySelector('.footer p');
     if (footer) {
         const currentYear = new Date().getFullYear();
-        footer.innerHTML = `&copy; ${currentYear} AutoTrade. All rights reserved.`;
+        footer.innerHTML = `&copy; ${currentYear} LuxAuto. All rights reserved.`;
     }
 });
 
@@ -258,7 +565,7 @@ document.addEventListener('keydown', function(e) {
     // Press 'H' to go to home/hero section
     if (e.key === 'h' || e.key === 'H') {
         if (!e.target.matches('input, textarea')) {
-            document.querySelector('#hero').scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('#why-choose-us').scrollIntoView({ behavior: 'smooth' });
         }
     }
     
@@ -274,5 +581,284 @@ document.addEventListener('keydown', function(e) {
 // Console Welcome Message
 // ===================================
 
-console.log('%c Welcome to AutoTrade! ', 'background: #0d6efd; color: white; font-size: 20px; padding: 10px;');
+console.log('%c Welcome to LuxAuto! ', 'background: #0d6efd; color: white; font-size: 20px; padding: 10px;');
 console.log('%c Your trusted platform for buying and selling vehicles ', 'font-size: 14px; color: #6c757d;');
+
+// ===================================
+// Landing Filter Dropdown Enhancer
+// ===================================
+
+function closeAllFilterPanels(exceptPanel) {
+    filterDropdownRegistry.forEach(entry => {
+        if (entry.panel === exceptPanel) {
+            return;
+        }
+        entry.close();
+    });
+}
+
+function enhanceLandingFilters() {
+    const selectElements = Array.from(document.querySelectorAll('.landing-filter'));
+
+    selectElements.forEach(select => {
+        if (select.dataset.enhanced === 'true') {
+            return;
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'filter-select-wrapper';
+        select.parentNode.insertBefore(wrapper, select);
+        wrapper.appendChild(select);
+
+        select.classList.add('filter-native-select');
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'filter-select-trigger';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+
+        const activeOption = select.options[select.selectedIndex];
+        const initialLabel = activeOption ? activeOption.textContent : (select.getAttribute('data-placeholder') || 'Select');
+        trigger.innerHTML = `<span>${initialLabel}</span><i class="bi bi-chevron-down"></i>`;
+        wrapper.appendChild(trigger);
+
+        const panel = document.createElement('div');
+        panel.className = 'filter-select-panel section-menu-card';
+        panel.setAttribute('aria-hidden', 'true');
+        panel.setAttribute('role', 'listbox');
+
+        const list = document.createElement('ul');
+        list.className = 'filter-select-list';
+
+        Array.from(select.options).forEach(option => {
+            const listItem = document.createElement('li');
+            const optionButton = document.createElement('button');
+            optionButton.type = 'button';
+            optionButton.className = 'filter-select-option';
+            optionButton.dataset.value = option.value;
+            optionButton.textContent = option.textContent;
+            optionButton.setAttribute('role', 'option');
+
+            if (option.selected) {
+                optionButton.classList.add('active');
+            }
+
+            optionButton.addEventListener('click', () => {
+                select.value = option.value;
+                trigger.querySelector('span').textContent = option.textContent;
+                list.querySelectorAll('.filter-select-option').forEach(btn => btn.classList.remove('active'));
+                optionButton.classList.add('active');
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                closePanel();
+            });
+
+            listItem.appendChild(optionButton);
+            list.appendChild(listItem);
+        });
+
+        panel.appendChild(list);
+        wrapper.appendChild(panel);
+
+        function openPanel() {
+            closeAllFilterPanels(panel);
+            panel.classList.add('open');
+            panel.setAttribute('aria-hidden', 'false');
+            trigger.classList.add('open');
+            trigger.setAttribute('aria-expanded', 'true');
+        }
+
+        function closePanel() {
+            panel.classList.remove('open');
+            panel.setAttribute('aria-hidden', 'true');
+            trigger.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+
+        trigger.addEventListener('click', event => {
+            event.preventDefault();
+            if (panel.classList.contains('open')) {
+                closePanel();
+            } else {
+                openPanel();
+            }
+        });
+
+        trigger.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                if (panel.classList.contains('open')) {
+                    closePanel();
+                } else {
+                    openPanel();
+                }
+            }
+        });
+
+        select.addEventListener('change', () => {
+            const matchingOption = Array.from(list.querySelectorAll('.filter-select-option')).find(btn => btn.dataset.value === select.value);
+            list.querySelectorAll('.filter-select-option').forEach(btn => btn.classList.remove('active'));
+            if (matchingOption) {
+                matchingOption.classList.add('active');
+                trigger.querySelector('span').textContent = matchingOption.textContent;
+            }
+        });
+
+        filterDropdownRegistry.push({ panel, close: closePanel });
+        select.dataset.enhanced = 'true';
+    });
+
+    return selectElements;
+}
+
+document.addEventListener('click', event => {
+    if (!event.target.closest('.filter-select-wrapper')) {
+        closeAllFilterPanels(null);
+    }
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+        closeAllFilterPanels(null);
+    }
+});
+
+// ===================================
+// Landing Search Functionality
+// ===================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.landing-search-input');
+    const searchBtn = document.querySelector('.landing-search-btn');
+    const filterToggle = document.getElementById('filterToggle');
+    const filterGroup = document.getElementById('filterGroup');
+    const filterSelects = enhanceLandingFilters();
+    const brandFilter = filterSelects[0] || null;
+    const regionFilter = filterSelects[1] || null;
+    const priceFilter = filterSelects[2] || null;
+    
+    // Ripple effect function for button only
+    function createRipple(button) {
+        if (button) {
+            button.classList.remove('ripple');
+            // Force reflow to restart animation
+            void button.offsetWidth;
+            button.classList.add('ripple');
+            
+            // Remove class after animation completes
+            setTimeout(() => {
+                button.classList.remove('ripple');
+            }, 800);
+        }
+    }
+    
+    // Handle filter toggle button click with closing animation
+    if (filterToggle && filterGroup) {
+        filterToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Add ripple effect to the button only
+            createRipple(filterToggle);
+            
+            // Toggle filter visibility with animations
+            if (filterGroup.classList.contains('show')) {
+                // Close animation
+                filterGroup.classList.add('hide');
+                filterToggle.classList.remove('active');
+                closeAllFilterPanels(null);
+                
+                // Wait for animation to complete before hiding
+                setTimeout(() => {
+                    filterGroup.classList.remove('show', 'hide');
+                    closeAllFilterPanels(null);
+                }, 500);
+            } else {
+                // Open animation
+                filterGroup.classList.add('show');
+                filterToggle.classList.add('active');
+            }
+        });
+    }
+    
+    // Handle search button click
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
+            performSearch();
+        });
+    }
+    
+    // Handle Enter key in search input
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    // Perform search function
+    function performSearch() {
+        const searchQuery = searchInput ? searchInput.value : '';
+        const brand = brandFilter ? brandFilter.value : '';
+        const region = regionFilter ? regionFilter.value : '';
+        const price = priceFilter ? priceFilter.value : '';
+        
+        // Log search parameters (in production, this would trigger actual search)
+        console.log('Search Parameters:', {
+            query: searchQuery,
+            brand: brand,
+            region: region,
+            priceRange: price
+        });
+        
+        // Scroll to featured section to show results
+        const featuredSection = document.querySelector('#featured');
+        if (featuredSection) {
+            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+            const targetPosition = featuredSection.offsetTop - navbarHeight;
+            
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Show user feedback (optional)
+        if (searchQuery || brand || region || price) {
+            // Create a temporary message
+            const message = document.createElement('div');
+            message.style.cssText = 'position: fixed; top: 20px; right: 20px; background: white; color: #000; padding: 15px 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10000; font-weight: 500;';
+            message.textContent = 'Searching for vehicles...';
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 2000);
+        }
+    }
+    
+    // Handle filter changes - auto-update
+    [brandFilter, regionFilter, priceFilter].forEach(filter => {
+        if (filter) {
+            filter.addEventListener('change', function() {
+                console.log('Filter changed:', this.value);
+                const wrapper = this.closest('.filter-select-wrapper');
+                if (!wrapper) {
+                    return;
+                }
+                const trigger = wrapper.querySelector('.filter-select-trigger');
+                if (!trigger) {
+                    return;
+                }
+                trigger.classList.add('selection-feedback');
+                setTimeout(() => {
+                    trigger.classList.remove('selection-feedback');
+                }, 400);
+            });
+        }
+    });
+    
+    // Removed click-outside-to-close behavior
+    // Filters now only close when the filter toggle button is clicked again
+});
+
