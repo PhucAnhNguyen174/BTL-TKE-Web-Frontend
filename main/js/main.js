@@ -187,6 +187,57 @@ const backToTopButton = document.getElementById('backToTop');
 // Track custom landing filter dropdowns so we can orchestrate their open/close states
 const filterDropdownRegistry = [];
 
+// Keep wheel/touch scrolling confined to a specific container so the page does not move
+function enableWheelLock(container, scrollableElement) {
+    if (!container || container.dataset.wheelLock === 'enabled') {
+        return;
+    }
+
+    const target = scrollableElement || container;
+    let touchStartY = 0;
+
+    const shouldLock = deltaY => {
+        const { scrollTop, scrollHeight, clientHeight } = target;
+        if (scrollHeight <= clientHeight) {
+            return true;
+        }
+        const atTop = scrollTop <= 0 && deltaY < 0;
+        const atBottom = scrollTop + clientHeight >= scrollHeight - 1 && deltaY > 0;
+        return atTop || atBottom;
+    };
+
+    const handleWheel = event => {
+        if (shouldLock(event.deltaY)) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    };
+
+    const handleTouchStart = event => {
+        if (event.touches && event.touches.length) {
+            touchStartY = event.touches[0].clientY;
+        }
+    };
+
+    const handleTouchMove = event => {
+        if (!event.touches || !event.touches.length) {
+            return;
+        }
+        const currentY = event.touches[0].clientY;
+        const deltaY = touchStartY - currentY;
+        if (shouldLock(deltaY)) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    container.dataset.wheelLock = 'enabled';
+}
+
 function toggleBackToTopButton() {
     if (window.scrollY > 300) {
         backToTopButton.classList.add('show');
@@ -290,6 +341,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const sectionNodes = Array.from(document.querySelectorAll('section[id]'));
     let menuAnchorElement = null;
 
+    // Ensure the landing overlay is dismissed and navbar is visible before calculating scroll offsets
+    const preparePageForMenuScroll = () => {
+        const landingAnimation = document.getElementById('landingAnimation');
+        const navbarElement = document.getElementById('mainNav');
+        const heroSection = document.getElementById('why-choose-us');
+
+        if (landingAnimation && !landingAnimation.classList.contains('hidden')) {
+            landingAnimation.classList.add('hidden');
+        }
+
+        if (navbarElement) {
+            navbarElement.classList.remove('navbar-hidden');
+            navbarElement.classList.add('navbar-visible');
+        }
+
+        if (heroSection && heroSection.classList.contains('section-hidden')) {
+            heroSection.classList.remove('section-hidden');
+            heroSection.classList.add('section-visible');
+        }
+    };
+
     if (menuPanel && menuList) {
         const menuItems = [];
 
@@ -307,13 +379,16 @@ document.addEventListener('DOMContentLoaded', function() {
             menuItems.push({ label, target: `#${section.id}` });
         });
 
-        menuList.innerHTML = '';
+    menuList.innerHTML = '';
+    enableWheelLock(menuPanel, menuList);
 
         function smoothScrollTo(targetSelector) {
             const targetElement = document.querySelector(targetSelector);
             if (!targetElement) {
                 return;
             }
+            preparePageForMenuScroll();
+
             const navbar = document.querySelector('.navbar');
             const navbarHeight = navbar ? navbar.offsetHeight : 0;
             const innerHeading = targetElement.querySelector('h1, h2, h3, h4, h5, h6');
@@ -322,6 +397,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const spacingOffset = innerHeading ? 32 : 16;
             const finalPosition = Math.max(anchorTop - navbarHeight - spacingOffset, 0);
             window.scrollTo({ top: finalPosition, behavior: 'smooth' });
+
+            // Final adjustment once the navbar is in place to avoid cropped headings on the first navigation
+            setTimeout(() => {
+                const refreshedNavbar = document.querySelector('.navbar');
+                const refreshedHeight = refreshedNavbar ? refreshedNavbar.offsetHeight : 0;
+                const currentRect = scrollAnchor.getBoundingClientRect();
+                const desiredTop = (innerHeading ? 32 : 16) + refreshedHeight;
+                const delta = currentRect.top - desiredTop;
+                if (Math.abs(delta) > 1) {
+                    window.scrollBy({ top: delta, behavior: 'auto' });
+                }
+            }, 350);
         }
 
         menuItems.forEach(item => {
@@ -632,6 +719,9 @@ function enhanceLandingFilters() {
         list.className = 'filter-select-list';
 
         Array.from(select.options).forEach(option => {
+            if (option.disabled || option.hidden) {
+                return;
+            }
             const listItem = document.createElement('li');
             const optionButton = document.createElement('button');
             optionButton.type = 'button';
@@ -657,7 +747,8 @@ function enhanceLandingFilters() {
             list.appendChild(listItem);
         });
 
-        panel.appendChild(list);
+    panel.appendChild(list);
+    enableWheelLock(panel, list);
         wrapper.appendChild(panel);
 
         function openPanel() {
