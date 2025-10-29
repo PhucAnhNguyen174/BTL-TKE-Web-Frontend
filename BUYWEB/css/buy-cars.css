@@ -500,6 +500,10 @@
     display: block;
     color: inherit;
     
+    /* Cố định kích thước toàn bộ card */
+    width: 244.4px;
+    height: calc(280px + 224.86px); /* Image height + body height = 504.86px */
+    
     /* Initial state for animation */
     opacity: 0;
     transform: translateY(30px);
@@ -633,11 +637,17 @@
     position: relative;
     background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
     padding: 2rem;
-    height: 280px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    
+    /* Cố định kích thước để khớp với card-body width */
+    width: 244.4px;
+    height: 280px;
+    min-width: 244.4px;
+    max-width: 244.4px;
+    box-sizing: border-box;
 }
 
 .car-card-image img {
@@ -695,7 +705,15 @@
     position: relative;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 0;
+    
+    /* Cố định kích thước theo yêu cầu */
+    width: 244.4px;
+    height: 224.86px;
+    min-width: 244.4px;
+    max-width: 244.4px;
+    min-height: 224.86px;
+    max-height: 224.86px;
+    box-sizing: border-box; /* Đảm bảo padding tính trong kích thước */
 }
 
 /* Animated gradient overlay */
@@ -751,7 +769,7 @@
     transform: translateX(3px);
 }
 
-/* Car name styling */
+/* Car name styling - cố định 3 dòng */
 .car-name {
     position: relative;
     z-index: 2;
@@ -760,7 +778,14 @@
     color: #e0e0e0;
     margin-bottom: 12px;
     line-height: 1.4;
-    min-height: 2.6rem;
+    height: 4.62rem; /* Chiều cao cố định cho 3 dòng: 1.1rem × 1.4 × 3 = 4.62rem */
+    min-height: 4.62rem;
+    max-height: 4.62rem;
+    overflow: hidden; /* Ẩn text tràn nếu quá dài */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Giới hạn 3 dòng */
+    line-clamp: 3; /* Standard property */
+    -webkit-box-orient: vertical;
     font-family: 'Poppins', sans-serif;
     transition: all 0.3s ease;
     

@@ -2048,7 +2048,7 @@ const cars = [
         years: "2024",
         tagline: "Bespoke Perfection - $30 Million Roadster",
         type: "convertible",
-        category: "collector",
+        category: "", // Xóa badge collector theo yêu cầu
         price: 30000000,
         sold: true,
         performance: [
