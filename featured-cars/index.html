@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LuxAuto featured car collections and curated inventory insights">
+    <title>LuxAuto Featured Cars</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="../main/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="../main/bootstrap-5.3.8-dist/font/bootstrap-icons.css">
+
+    <!-- Shared LuxAuto Theme -->
+    <link rel="stylesheet" href="../main/css/styles.css">
+
+    <!-- Featured Cars Page Tweaks -->
+    <link rel="stylesheet" href="css/featured.css">
+</head>
+<body class="page-fade-in">
+    <!-- Dedicated navigation for the featured inventory page -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-hidden" id="mainNav" style="background-color: rgb(18, 18, 18); backdrop-filter: blur(10px);">
+        <div class="container d-flex align-items-center">
+            <div class="navbar-left-group d-flex align-items-center me-auto">
+                <button id="landingMenuBtn" class="landing-menu-btn nav-menu-trigger" type="button" aria-expanded="false" aria-controls="sectionMenuPanel">
+                    <i class="bi bi-list"></i> MENU
+                </button>
+            </div>
+
+            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../main/index.html" data-page="featured-cars">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#featured">Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inventoryGrid">Inventory</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#continue-exploring">Stay Connected</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="btn-group ms-lg-2" role="group">
+                            <a href="../main/pages/login.html" class="btn btn-auth-outline pill-btn-left">Login</a>
+                            <a href="../main/pages/register.html" class="btn btn-auth-solid pill-btn-right">Register</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sectionMenuPanel" class="section-menu-panel" aria-hidden="true">
+            <div class="section-menu-card">
+                <div class="section-menu-header">
+                    <span class="section-menu-title">Browse Sections</span>
+                    <button id="sectionMenuClose" class="section-menu-close" type="button" aria-label="Close menu">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <ul id="sectionMenuList" class="section-menu-list"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Featured inventory grid built exclusively from the supplied images -->
+    <section id="featured" class="featured-section section-transition py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold text-white">Signature Collections</h2>
+                <p class="lead text-light">Discover limited-production legends and modern icons curated by LuxAuto specialists.</p>
+
+                <div class="inventory-filter-group d-inline-flex flex-wrap justify-content-center gap-2">
+                    <button class="btn btn-outline-light inventory-filter active" data-filter="all">All Models</button>
+                    <button class="btn btn-outline-light inventory-filter" data-filter="hypercar">Hypercars</button>
+                    <button class="btn btn-outline-light inventory-filter" data-filter="gt">Grand Tourers</button>
+                    <button class="btn btn-outline-light inventory-filter" data-filter="track">Track Focused</button>
+                </div>
+                <p class="inventory-count text-light mt-3 mb-0" id="inventoryCount">Showing 6 curated vehicles</p>
+            </div>
+
+            <div class="row g-4" id="inventoryGrid">
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="hypercar">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image1.jpg" class="card-img-top" alt="Pagani Huayra Roadster">
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-3">1 of 100</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Pagani Huayra Roadster BC</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2022 | <i class="bi bi-speedometer2"></i> 1,200 km | <i class="bi bi-ev-front"></i> 800 hp</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-lightning-charge"></i> AMG V12 Twin-Turbo Hybrid Assist</li>
+                                <li><i class="bi bi-award"></i> Exposed carbon triax monocoque</li>
+                                <li><i class="bi bi-flag"></i> Active aero with adaptive flaps</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$3,200,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="gt">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image2.jpg" class="card-img-top" alt="Bentley Continental GT Speed">
+                            <span class="badge bg-primary position-absolute top-0 start-0 m-3">Collector Spec</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Bentley Continental GT Speed</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2024 | <i class="bi bi-speedometer2"></i> 3,800 km | <i class="bi bi-gear"></i> 8-Speed DCT</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-gem"></i> Mulliner blackline package with satin copper accents</li>
+                                <li><i class="bi bi-snow"></i> All-wheel steering with predictive traction logic</li>
+                                <li><i class="bi bi-broadcast"></i> 21-speaker Naim immersive audio</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$410,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="track">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image3.jpg" class="card-img-top" alt="Ferrari SF90 XX Stradale">
+                            <span class="badge bg-success position-absolute top-0 start-0 m-3">Track Pack</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Ferrari SF90 XX Stradale</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2025 | <i class="bi bi-speedometer2"></i> 320 km | <i class="bi bi-ev-front"></i> 1,030 hp</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-lightning"></i> Plug-in hybrid tri-motor torque vectoring</li>
+                                <li><i class="bi bi-hourglass-split"></i> 0-100 km/h in 2.3 seconds</li>
+                                <li><i class="bi bi-box-arrow-in-up-right"></i> XX aero kit with 530 kg downforce</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$1,150,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="hypercar">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image1.jpg" class="card-img-top" alt="Koenigsegg Jesko Attack">
+                            <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3">New Arrival</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Koenigsegg Jesko Attack</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2024 | <i class="bi bi-speedometer2"></i> 600 km | <i class="bi bi-ev-front"></i> 1,277 hp</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-arrow-up-right"></i> Triplex suspension with adjustable wing profiles</li>
+                                <li><i class="bi bi-diagram-3"></i> Light-speed 9-speed transmission</li>
+                                <li><i class="bi bi-cpu"></i> Autoskin powered bodywork with remote actuation</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$3,000,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="gt">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image2.jpg" class="card-img-top" alt="Rolls-Royce Spectre">
+                            <span class="badge bg-info text-dark position-absolute top-0 start-0 m-3">EV Bespoke</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Rolls-Royce Spectre Bespoke</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2025 | <i class="bi bi-speedometer2"></i> 540 km | <i class="bi bi-lightning-charge"></i> Electric AWD</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-stars"></i> Shooting star headliner with constellations</li>
+                                <li><i class="bi bi-hammer"></i> Atelier hand-crafted veneers</li>
+                                <li><i class="bi bi-shield-check"></i> Silent seal cabin insulation</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$620,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 inventory-card" data-category="track">
+                    <div class="card car-card h-100 shadow-sm">
+                        <div class="card-img-top-wrapper">
+                            <img src="images/image3.jpg" class="card-img-top" alt="Porsche 911 GT3 RS Weissach">
+                            <span class="badge bg-secondary position-absolute top-0 start-0 m-3">Weissach Pack</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Porsche 911 GT3 RS Weissach</h5>
+                            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> 2023 | <i class="bi bi-speedometer2"></i> 4,400 km | <i class="bi bi-speedometer"></i> 9,500 rpm limit</p>
+                            <ul class="list-unstyled inventory-specs">
+                                <li><i class="bi bi-compass"></i> Drag reduction system with steering wheel trigger</li>
+                                <li><i class="bi bi-palette"></i> Paint-to-sample Arctic Grey</li>
+                                <li><i class="bi bi-activity"></i> Carbon roll cage with magnesium wheels</li>
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-primary mb-0">$350,000</h4>
+                                <a href="../main/pages/car-details.html" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="../main/pages/browse.html" class="btn btn-primary btn-lg">
+                    View Full Inventory <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA section encouraging visitors to explore the full inventory -->
+    <section id="continue-exploring" class="cta-section section-transition py-5">
+        <div class="container text-center">
+            <h2 class="display-4 fw-bold text-white">Haven't found the right car yet?</h2>
+            <p class="lead text-light mb-4">Explore our complete inventory to discover additional configurations, colorways, and bespoke commissions.</p>
+            <a href="../main/pages/browse.html" class="btn btn-primary btn-lg">
+                View All Cars <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer matches the main site's styling for a seamless experience -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row gy-5 footer-main">
+                <div class="col-lg-4 col-md-6">
+                    <a href="#landingAnimation" class="footer-brand d-inline-flex align-items-center text-decoration-none">
+                        <i class="bi bi-lightning-charge-fill me-2"></i>
+                        <span>LuxAuto</span>
+                    </a>
+                    <p class="footer-description mt-3">Our featured collection represents the rarest commissions, homologated specials, and bespoke electric grand tourers sourced for discerning owners.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Visit LuxAuto on Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Visit LuxAuto on Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" aria-label="Visit LuxAuto on Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" aria-label="Visit LuxAuto on LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title">Collections</h6>
+                    <ul class="footer-nav">
+                        <li><a href="#featured">Hypercar Capsule</a></li>
+                        <li><a href="../main/pages/browse.html">Browse Inventory</a></li>
+                        <li><a href="../main/index.html#partners">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-title">Resources</h6>
+                    <ul class="footer-nav">
+                        <li><a href="../main/pages/browse.html">Browse Inventory</a></li>
+                        <li><a href="../main/pages/privacy.html">Privacy Policy</a></li>
+                        <li><a href="../main/pages/terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-title">Newsletter</h6>
+                    <p class="footer-cta mb-3">Receive curator briefings, allocation alerts, and collector event invitations.</p>
+                    <a href="../main/index.html#newsletter" class="btn btn-primary btn-sm">Join The List</a>
+                    <div class="mt-3 footer-cta">
+                        <i class="bi bi-headset me-2"></i><span>Need support? <a href="../main/index.html#contact" class="text-decoration-none text-white">Speak with our concierge</a>.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="row footer-bottom align-items-center g-3">
+                <div class="col-md-6 text-center text-md-start">
+                    <span>&copy; 2025 LuxAuto. Curated for the modern collector.</span>
+                </div>
+                <div class="col-md-6">
+                    <div class="footer-bottom-links">
+                        <a href="../main/pages/privacy.html">Privacy</a>
+                        <a href="../main/pages/terms.html">Terms</a>
+                        <a href="#featured">Showcase</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="../main/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Shared interactions from the main experience -->
+    <script src="../main/js/main.js"></script>
+
+    <!-- Featured cars specific behavior -->
+    <script src="js/featured.js"></script>
+</body>
+</html>

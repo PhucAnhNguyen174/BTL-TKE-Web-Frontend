@@ -461,6 +461,9 @@ document.addEventListener('DOMContentLoaded', function() {
         menuPanel.setAttribute('aria-hidden', 'false');
         menuOpen = true;
         setTriggersExpanded('true');
+        if (document.body) {
+            document.body.classList.add('section-menu-open');
+        }
     }
 
     function closeMenu() {
@@ -471,6 +474,9 @@ document.addEventListener('DOMContentLoaded', function() {
         menuPanel.setAttribute('aria-hidden', 'true');
         menuOpen = false;
         setTriggersExpanded('false');
+        if (document.body) {
+            document.body.classList.remove('section-menu-open');
+        }
     }
 
     function toggleMenu() {
