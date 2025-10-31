@@ -1,0 +1,18 @@
+flowchart TD
+  A[DOMContentLoaded] --> B[populateYearDropdown]
+  A --> C[Gắn listeners inputs/selects]
+  A --> D[Khởi tạo select-enhance]
+  C --> E[Cập nhật Preview]
+  C --> F[updateFormProgress]
+  C --> G[updatePriceSuggestion]
+  C --> H[checkPriceComparison]
+  C --> I[updateStatistics]
+  J[Upload ảnh] --> K[handleImageFiles]
+  K --> L[renderImagePreviews]
+  L --> E
+  M[Save Draft] --> N[localStorage]
+  O[Submit] --> P[Validate]
+  P --> Q{Hợp lệ?}
+  Q -- No --> R[Hiện lỗi/Toast]
+  Q -- Yes --> S[Overlay Loading -> Success]
+  S --> T[Reset form + thống kê]

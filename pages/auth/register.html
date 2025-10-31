@@ -11,18 +11,23 @@
   <link rel="stylesheet" href="../../assets/bootstrap/font/bootstrap-icons.css">
   <!-- Font Awesome (local) -->
   <link rel="stylesheet" href="../../assets/bootstrap/fontawesome/css/all.min.css">
+  
+  <!-- Base + Header shared styles -->
+  <link rel="stylesheet" href="../../assets/style/base.css">
+  <link rel="stylesheet" href="../../assets/style/header.css">
+  
   <!-- Shared auth styles -->
   <link rel="stylesheet" href="./auth-css/auth.css">
 </head>
 <body>
   <div class="page-bg"></div>
   
-  <!-- Unified Navbar (from Sell - simplified for auth pages) -->
+  <!-- Unified Navbar (from Sell) -->
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-hidden" id="mainNav" style="background-color: rgb(18, 18, 18); backdrop-filter: blur(10px);">
     <div class="container d-flex align-items-center">
       <div class="navbar-left-group d-flex align-items-center me-auto">
-        <!-- Brand Logo -->
-        <a class="navbar-brand" href="../home/index.html" aria-label="LuxAuto home">
+        <!-- Brand Logo (now triggers section menu) -->
+        <a class="navbar-brand nav-menu-trigger" href="#" id="landingMenuBtn" aria-expanded="false" aria-controls="sectionMenuPanel" aria-label="LuxAuto menu">
           <img src="../../assets/logo/logo9.png" alt="LuxAuto" class="brand-logo" style="height: 50px; transition: transform 0.3s ease;">
         </a>
       </div>
@@ -39,6 +44,15 @@
             <a class="nav-link" href="../home/index.html#landingAnimation">Home</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="../home/index.html#buy-cars">Buy Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../sell/sell.html">Sell Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../home/index.html#featured">Featured Cars</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="../contact/contact.html">Contact</a>
           </li>
           <li class="nav-item">
@@ -49,6 +63,19 @@
             </div>
           </li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Section Navigation Panel -->
+    <div id="sectionMenuPanel" class="section-menu-panel" aria-hidden="true">
+      <div class="section-menu-card">
+        <div class="section-menu-header">
+          <span class="section-menu-title">Browse Sections</span>
+          <button id="sectionMenuClose" class="section-menu-close" type="button" aria-label="Close menu">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <ul id="sectionMenuList" class="section-menu-list"></ul>
       </div>
     </div>
   </nav>
@@ -113,19 +140,24 @@
 
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="loading-content">
-      <div class="spinner-border text-light" role="status"></div>
-  <p class="loading-text">Processing...</p>
+    <div class="overlay-content">
+      <div class="spinner-border text-light mb-3" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-white">Creating your account...</p>
     </div>
   </div>
 
   <!-- Success Overlay -->
   <div id="successOverlay" class="success-overlay hidden">
-    <div class="success-content">
-      <div class="success-checkmark">
-        <i class="fa-solid fa-circle-check"></i>
+    <div class="overlay-content">
+      <div class="success-animation">
+        <div class="success-checkmark">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
       </div>
-  <p class="success-text">Registration successful!</p>
+      <h3 class="text-white mt-3">Success!</h3>
+      <p class="text-white">Registration successful! Redirecting to login...</p>
     </div>
   </div>
 
@@ -134,7 +166,8 @@
   <!-- Bootstrap JS -->
   <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- Shared nav behaviour -->
-  <script src="../../assets/js/utils.js"></script>  <script src="../../assets/js/navbar.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../assets/js/navbar.js"></script>
 
   <!-- Show navbar immediately on auth pages -->
   <script>

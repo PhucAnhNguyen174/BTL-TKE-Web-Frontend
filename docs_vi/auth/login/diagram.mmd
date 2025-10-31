@@ -1,0 +1,10 @@
+flowchart TD
+  A[User nhập Email/Password] --> B[Submit]
+  B --> C[validateLogin]
+  C --> D{Hợp lệ?}
+  D -- No --> E[Toast lỗi + shakeCard]
+  D -- Yes --> F[loginUser + setCurrentUser]
+  F --> G[Overlay Loading]
+  G --> H[Overlay Success]
+  H --> I[Redirect Home]
+  J[Remember me?] --> K[Lưu email vào localStorage]

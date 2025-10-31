@@ -1,0 +1,177 @@
+Home - Code & Bootstrap chi tiết
+================================
+
+JS chính và vai trò
+-------------------
+- pages/home/home-js/home.js
+  - enhanceLandingFilters(): tạo select tuỳ chỉnh cho bộ lọc (brand/region/price)
+  - performSearch(): gom tiêu chí, lọc Featured, cuộn tới #featured
+  - highlightCurrentPageNav(): đánh dấu nav hiện tại
+  - IntersectionObservers: reveal section & thẻ (card/stat/feature)
+- assets/js/navbar.js: hành vi navbar/section menu (dùng chung)
+- assets/js/select-enhance.js: style/pattern panel cho select (tham khảo khi mở rộng)
+
+Bootstrap sử dụng
+-----------------
+- Grid/Layout: .container, .row, .col-*
+- Navbar: .navbar, .navbar-brand
+- Buttons/Badges: .btn, .btn-outline-*, .badge
+- Cards: .card, .card-body
+- Utilities: .text-*, .mt-*, .mb-*, .shadow, .rounded
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích)
+--------------------------------------------
+1) Khởi tạo IntersectionObserver - Hiệu ứng reveal khi scroll
+/**
+ * Chức năng: Theo dõi các phần tử, tự động thêm class 'reveal' khi vào viewport
+ * Tác dụng: Tạo hiệu ứng fade-in/slide-up khi người dùng cuộn đến
+ * CSS: .reveal { opacity:1; transform:translateY(0); transition:... }
+ * Bootstrap: Không dùng trực tiếp, nhưng các card dùng .card, .card-body
+ */
+const elementObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { // Khi phần tử vào viewport
+      e.target.classList.add('reveal'); // Thêm class để trigger animation
+      elementObserver.unobserve(e.target); // Ngừng theo dõi (chỉ animate 1 lần)
+    }
+  });
+}, { 
+  rootMargin: '0px 0px -10% 0px', // Kích hoạt sớm hơn 10% chiều cao viewport
+  threshold: 0.1 // Trigger khi 10% phần tử hiện ra
+});
+
+// Áp dụng cho tất cả card/stat cần hiệu ứng
+$$('.feature-card, .stat-card, .car-card').forEach(el => elementObserver.observe(el));
+
+2) Bộ lọc landing (trigger + panel chi tiết)
+/**
+ * Chức năng: Tạo dropdown tuỳ chỉnh cho bộ lọc landing (Brand/Region/Price)
+ * Tác dụng: Thay thế <select> mặc định bằng UI đẹp hơn, dễ style
+ * Bootstrap: Dùng .btn, .dropdown-menu styling (nhưng không dùng JS dropdown)
+ */
+function enhanceLandingFilters() {
+  $$('.landing-filter').forEach(group => {
+    const trigger = group.querySelector('.filter-trigger'); // Nút bấm
+    const panel = group.querySelector('.filter-panel'); // Menu dropdown
+    const list = panel.querySelector('.filter-list'); // Danh sách scroll
+    
+    // Bật wheel lock để tránh cuộn trang khi lăn chuột trong panel
+    enableWheelLock(panel, list);
+    
+    // Click trigger -> toggle mở/đóng panel
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = panel.classList.contains('open');
+      closeAllFilterPanels(); // Đóng tất cả panel khác
+      if (!isOpen) panel.classList.add('open');
+    });
+    
+    // Click option trong panel -> cập nhật giá trị và đóng
+    panel.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-value]'); // Tìm item có data-value
+      if (!item) return;
+      
+      // Cập nhật trigger hiển thị giá trị đã chọn
+      trigger.dataset.value = item.dataset.value;
+      trigger.textContent = item.textContent;
+      
+      // Đóng panel
+      panel.classList.remove('open');
+    });
+  });
+  
+  // Click ngoài -> đóng tất cả panel
+  document.addEventListener('click', () => closeAllFilterPanels());
+}
+
+function closeAllFilterPanels() {
+  $$('.filter-panel.open').forEach(p => p.classList.remove('open'));
+}
+
+3) Cuộn mượt tới Featured sau khi tìm kiếm
+/**
+ * Chức năng: Thu thập điều kiện lọc và cuộn đến danh sách Featured
+ * Tác dụng: Sau khi người dùng chọn bộ lọc + nhấn Search, hiển thị kết quả
+ * Bootstrap: .navbar chiều cao cần trừ để không che Featured section
+ */
+function performSearch() {
+  // Thu thập giá trị từ các filter
+  const brand = $('.filter-trigger[data-filter="brand"]')?.dataset.value || 'all';
+  const region = $('.filter-trigger[data-filter="region"]')?.dataset.value || 'all';
+  const price = $('.filter-trigger[data-filter="price"]')?.dataset.value || 'all';
+  const query = $('#searchInput')?.value.trim() || '';
+  
+  console.log('Searching:', { brand, region, price, query });
+  
+  // Lọc các card (ví dụ đơn giản theo data-category)
+  $$('.car-card').forEach(card => {
+    const cat = card.dataset.category || '';
+    const match = (brand === 'all' || cat === brand); // Logic lọc đơn giản
+    card.style.display = match ? 'block' : 'none';
+  });
+  
+  // Cuộn mượt đến #featured
+  const featured = document.querySelector('#featured');
+  if (featured) {
+    const nav = document.querySelector('.navbar');
+    const offset = (nav?.offsetHeight || 0) + 12;
+    const top = featured.offsetTop - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+
+// Gắn sự kiện cho nút Search
+$('#searchBtn')?.addEventListener('click', performSearch);
+
+4) Wishlist / Quick View actions với notification
+/**
+ * Chức năng: Hiển thị thông báo nhỏ khi click các nút hành động trên card
+ * Tác dụng: Phản hồi tức thì cho người dùng (thêm wishlist, so sánh, xem nhanh)
+ * Bootstrap: .btn-outline-* cho các nút icon
+ */
+function initCardActions() {
+  // Wishlist button
+  $$('[data-action="wishlist"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const card = btn.closest('.car-card');
+      const title = card.querySelector('.card-title')?.textContent || 'Xe này';
+      
+      // Toggle trạng thái
+      btn.classList.toggle('active');
+      const isAdded = btn.classList.contains('active');
+      
+      // Hiển thị notification nhỏ
+      showNotification(isAdded ? `Đã thêm "${title}" vào yêu thích` : `Đã xoá "${title}" khỏi yêu thích`);
+    });
+  });
+  
+  // Quick view button
+  $$('[data-action="quick-view"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showNotification('Đang mở xem nhanh...');
+      // Logic mở modal xem nhanh...
+    });
+  });
+}
+
+/**
+ * Hiển thị thông báo nhỏ góc màn hình
+ * CSS: Chèn động @keyframes slideIn + fadeOut
+ */
+function showNotification(text) {
+  const notif = document.createElement('div');
+  notif.className = 'notification'; // CSS tự định nghĩa: position fixed, animation
+  notif.textContent = text;
+  document.body.appendChild(notif);
+  
+  // Tự động xoá sau 2.5s
+  setTimeout(() => notif.remove(), 2500);
+}
+
+Ghi chú
+-------
+- Nếu cần đồng nhất UI select với trang Sell, chuyển sang dùng assets/js/select-enhance.js để có portal + wheel lock.
+- IntersectionObserver có thể thêm nhiều ngưỡng threshold để tạo hiệu ứng phức tạp hơn.
+- Notification có thể mở rộng thành toast system như trong Sell/Contact để thống nhất.

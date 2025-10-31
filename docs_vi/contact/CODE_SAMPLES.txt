@@ -1,0 +1,277 @@
+Contact - Code & Bootstrap chi tiết
+==================================
+
+JS chính và vai trò
+-------------------
+- pages/contact/contact-js/contact.js
+  - getMessages()/setMessages(): localStorage('contacts')
+  - saveMessage(), updateMessage(), deleteMessage()
+  - renderMessages(): vẽ bảng + badge trạng thái + phân trang đơn giản
+  - showMessageModal(data): modal dựng tay
+  - validateEmail()/validatePhone(), char counter, form progress
+  - enhanceSelects(): bản riêng (khuyến nghị hợp nhất dùng select-enhance.js)
+
+Bootstrap sử dụng
+-----------------
+- Tables: .table, .table-striped, .table-hover
+- Badges: .badge, .text-bg-*
+- Buttons: .btn, .btn-outline-*
+- Cards: .card, .card-body
+- Forms: .form-control, .form-select
+- Layout/Utilities: .container, .row, .col-*, .d-flex, .justify-content-*, .align-items-*
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích chi tiết)
+------------------------------------------------------
+1) LocalStorage helpers - Quản lý tin nhắn
+/**
+ * Chức năng: Lấy danh sách tin nhắn từ localStorage
+ * Tác dụng: Dữ liệu persist giữa các phiên làm việc (demo, không có backend)
+ * Trả về: Array of messages hoặc [] nếu chưa có/lỗi parse
+ */
+function getMessages() {
+  try { 
+    return JSON.parse(localStorage.getItem('contacts') || '[]'); 
+  } catch { 
+    return []; // Nếu data bị corrupt, trả về mảng rỗng
+  }
+}
+
+/**
+ * Chức năng: Lưu danh sách tin nhắn vào localStorage
+ * Tham số: list - Array of message objects
+ */
+function setMessages(list) { 
+  localStorage.setItem('contacts', JSON.stringify(list)); 
+}
+
+2) Lưu message mới
+/**
+ * Chức năng: Thêm tin nhắn mới vào đầu danh sách
+ * Tác dụng: Lưu form contact, render lại bảng
+ * Payload: { name, email, phone, subject, message }
+ * Bootstrap: Sau khi lưu -> hiển thị toast (thành công)
+ */
+function saveMessage(payload) {
+  const list = getMessages();
+  
+  // Tạo object message với metadata
+  const item = { 
+    id: Date.now(),           // ID unique (timestamp)
+    status: 'new',            // Trạng thái: 'new' | 'read'
+    timestamp: new Date().toISOString(), // Thời gian
+    ...payload                // Spread dữ liệu form
+  };
+  
+  list.unshift(item); // Thêm vào đầu (newest first)
+  setMessages(list);  // Lưu lại
+  
+  renderMessages();   // Vẽ lại bảng
+  updateNotificationBadge(); // Cập nhật badge số lượng new
+  
+  showToast('success', 'Thành công', 'Tin nhắn của bạn đã được gửi');
+}
+
+// Sử dụng khi submit form
+$('#contactForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const data = {
+    name: $('#name').value.trim(),
+    email: $('#email').value.trim(),
+    phone: $('#phone').value.trim(),
+    subject: $('#subject').value,
+    message: $('#message').value.trim()
+  };
+  
+  // Validate trước khi lưu
+  if (!data.name || !data.email || !data.message) {
+    return showToast('error', 'Lỗi', 'Vui lòng điền đầy đủ thông tin');
+  }
+  if (!validateEmail(data.email)) {
+    return showToast('error', 'Lỗi', 'Email không hợp lệ');
+  }
+  
+  saveMessage(data);
+  e.target.reset(); // Clear form
+});
+
+3) Render bảng với badge trạng thái
+/**
+ * Chức năng: Vẽ bảng tin nhắn với bộ lọc tìm kiếm
+ * Tác dụng: Hiển thị tối đa 20 tin, hỗ trợ filter theo tên/email/message
+ * Bootstrap: .table.table-striped.table-hover, .badge.text-bg-*
+ */
+function renderMessages(filter = '') {
+  const tbody = document.querySelector('#messageTable tbody');
+  if (!tbody) return;
+  
+  // Lấy và lọc danh sách
+  const list = getMessages().filter(m => {
+    if (!filter) return true;
+    const searchLower = filter.toLowerCase();
+    return m.name?.toLowerCase().includes(searchLower) 
+        || m.email?.toLowerCase().includes(searchLower) 
+        || m.message?.toLowerCase().includes(searchLower);
+  });
+  
+  // Giới hạn 20 tin gần nhất
+  const display = list.slice(0, 20);
+  
+  // Vẽ các hàng
+  tbody.innerHTML = display.map(m => {
+    // Badge màu theo trạng thái
+    const badgeClass = m.status === 'read' ? 'text-bg-secondary' : 'text-bg-primary';
+    const badgeText = m.status === 'read' ? 'Đã đọc' : 'Mới';
+    
+    // Format thời gian
+    const time = new Date(m.timestamp).toLocaleString('vi-VN');
+    
+    return `
+      <tr data-id="${m.id}" class="${m.status === 'new' ? 'fw-bold' : ''}">
+        <td>${m.name}</td>
+        <td>${m.email}</td>
+        <td><small class="text-muted">${time}</small></td>
+        <td>
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary" data-action="view" title="Xem chi tiết">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-success" data-action="mark" title="Đánh dấu đã đọc">
+            <i class="bi bi-check"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" data-action="delete" title="Xóa">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>`;
+  }).join('');
+  
+  // Hiển thị số lượng
+  $('#message-count').textContent = `${display.length}/${list.length} tin nhắn`;
+  
+  // Gắn event handler (event delegation)
+  tbody.addEventListener('click', handleTableAction);
+}
+
+/**
+ * Xử lý các action button trong bảng
+ */
+function handleTableAction(e) {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  
+  const action = btn.dataset.action;
+  const row = btn.closest('tr');
+  const id = +row.dataset.id;
+  const list = getMessages();
+  const msg = list.find(m => m.id === id);
+  
+  if (!msg) return;
+  
+  switch (action) {
+    case 'view':
+      showMessageModal(msg);
+      break;
+    case 'mark':
+      msg.status = 'read';
+      setMessages(list);
+      renderMessages();
+      showToast('success', 'Đã cập nhật', 'Tin nhắn đã được đánh dấu đã đọc');
+      break;
+    case 'delete':
+      if (confirm('Xóa tin nhắn này?')) {
+        const idx = list.findIndex(m => m.id === id);
+        list.splice(idx, 1);
+        setMessages(list);
+        renderMessages();
+        showToast('info', 'Đã xóa', 'Tin nhắn đã được xóa');
+      }
+      break;
+  }
+}
+
+4) Modal dựng tay (chi tiết)
+/**
+ * Chức năng: Hiển thị chi tiết tin nhắn trong modal overlay
+ * Tác dụng: Xem đầy đủ nội dung, không dùng Bootstrap modal để tùy chỉnh linh hoạt
+ * Tham số: msg - object message với { name, email, phone, subject, message }
+ */
+function showMessageModal(msg) {
+  // Tạo overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center';
+  overlay.style.zIndex = '10100'; // Cao hơn toast
+  
+  // Tạo nội dung modal
+  overlay.innerHTML = `
+    <div class="card shadow-lg" style="max-width:640px; width:90%; max-height:80vh; overflow:auto;">
+      <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+        <strong><i class="bi bi-envelope-open"></i> Chi tiết tin nhắn</strong>
+        <button class="btn btn-sm btn-close btn-close-white" data-close aria-label="Đóng"></button>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="fw-bold text-muted small">Người gửi:</label>
+          <div>${msg.name}</div>
+        </div>
+        <div class="mb-3">
+          <label class="fw-bold text-muted small">Email:</label>
+          <div><a href="mailto:${msg.email}">${msg.email}</a></div>
+        </div>
+        ${msg.phone ? `
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">Điện thoại:</label>
+            <div><a href="tel:${msg.phone}">${msg.phone}</a></div>
+          </div>` : ''}
+        ${msg.subject ? `
+          <div class="mb-3">
+            <label class="fw-bold text-muted small">Chủ đề:</label>
+            <div>${msg.subject}</div>
+          </div>` : ''}
+        <div class="mb-3">
+          <label class="fw-bold text-muted small">Nội dung:</label>
+          <div class="p-3 bg-light rounded">${msg.message}</div>
+        </div>
+        <div class="text-muted small">
+          <i class="bi bi-clock"></i> ${new Date(msg.timestamp).toLocaleString('vi-VN')}
+        </div>
+      </div>
+      <div class="card-footer text-end">
+        <button class="btn btn-secondary" data-close>Đóng</button>
+        <button class="btn btn-primary" data-reply>
+          <i class="bi bi-reply"></i> Trả lời
+        </button>
+      </div>
+    </div>`;
+  
+  // Xử lý sự kiện đóng
+  overlay.addEventListener('click', (e) => {
+    // Click overlay hoặc nút close -> đóng
+    if (e.target === overlay || e.target.hasAttribute('data-close')) {
+      overlay.remove();
+    }
+    
+    // Nút reply (demo)
+    if (e.target.closest('[data-reply]')) {
+      overlay.remove();
+      window.location.href = `mailto:${msg.email}?subject=Re: ${msg.subject || 'Liên hệ'}`;
+    }
+  });
+  
+  // Thêm vào body
+  document.body.appendChild(overlay);
+  
+  // Focus vào nút đóng (a11y)
+  overlay.querySelector('[data-close]')?.focus();
+}
+
+5) Validate
+function validateEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v||''); }
+const PHONE_VN = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
+function validatePhone(v){ return PHONE_VN.test((v||'').replace(/\s|-/g, '')); }
+
+Ghi chú
+------
+- Nên hợp nhất enhanceSelects() ở trang này sang assets/js/select-enhance.js để tránh trùng lặp.
+- Với bảng lớn, cân nhắc ảo hoá (virtualize) hoặc phân trang đầy đủ.

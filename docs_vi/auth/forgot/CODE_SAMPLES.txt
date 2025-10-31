@@ -1,0 +1,100 @@
+Auth/Forgot - Code & Bootstrap chi tiết
+======================================
+
+JS chính và vai trò
+-------------------
+- pages/auth/auth-js/auth.js
+  - Validate email, overlay mô phỏng gửi yêu cầu đặt lại mật khẩu
+
+Bootstrap sử dụng
+-----------------
+- Forms: .form-control
+- Buttons: .btn, .btn-primary
+- Cards: .card
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích chi tiết)
+------------------------------------------------------
+/**
+ * Chức năng: Xử lý quên mật khẩu (mô phỏng gửi email)
+ * Tác dụng: Validate email -> Hiển thị overlay -> Thông báo thành công
+ * Lưu ý: Demo only - thực tế cần gửi API backend để generate reset token
+ * Bootstrap: .form-control, .btn-primary, .is-invalid
+ */
+const form = document.querySelector('#forgotForm');
+
+form?.addEventListener('submit', (e) => {
+  e.preventDefault(); // Ngăn reload trang
+  
+  // Bước 1: Lấy email
+  const emailInput = $('#email');
+  const email = emailInput.value.trim();
+  
+  // Bước 2: Validate email
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Hiển thị lỗi
+    emailInput.classList.add('is-invalid');
+    let feedback = emailInput.nextElementSibling;
+    if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+      feedback = document.createElement('div');
+      feedback.className = 'invalid-feedback';
+      emailInput.parentNode.appendChild(feedback);
+    }
+    feedback.textContent = 'Vui lòng nhập email hợp lệ';
+    showToast('error', 'Lỗi', 'Email không đúng định dạng');
+    return;
+  }
+  
+  // Clear lỗi nếu có
+  emailInput.classList.remove('is-invalid');
+  
+  // Bước 3: Hiển thị overlay loading
+  showOverlay('Đang gửi email khôi phục...');
+  
+  // Bước 4: Mô phỏng delay gửi email (900ms)
+  setTimeout(() => {
+    hideOverlay();
+    
+    // Bước 5: Hiển thị overlay thành công
+    showOverlay('Email đã được gửi!', 'success');
+    
+    // Bước 6: Reset form
+    e.target.reset();
+    
+    // Tự động ẩn overlay sau 2s
+    setTimeout(() => hideOverlay(), 2000);
+    
+    // Hiển thị toast hướng dẫn
+    showToast('success', 'Thành công', 
+      'Vui lòng kiểm tra email để đặt lại mật khẩu. Link có hiệu lực trong 24h.');
+  }, 900);
+});
+
+/**
+ * Hiển thị overlay loading/success
+ * Bootstrap: .spinner-border, .bi-check-circle-fill
+ */
+function showOverlay(text, type = 'loading') {
+  let overlay = document.querySelector('.auth-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'auth-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75';
+    overlay.style.zIndex = '10200';
+    document.body.appendChild(overlay);
+  }
+  
+  // Icon khác nhau theo type
+  const icon = type === 'success' 
+    ? '<i class="bi bi-check-circle-fill text-success" style="font-size:4rem"></i>'
+    : '<div class="spinner-border text-primary" style="width:3rem;height:3rem" role="status"></div>';
+  
+  overlay.innerHTML = `
+    <div class="text-center text-white">
+      ${icon}
+      <div class="mt-3 fs-5">${text}</div>
+    </div>`;
+  overlay.classList.add('show');
+}
+
+function hideOverlay() {
+  document.querySelector('.auth-overlay')?.remove();
+}

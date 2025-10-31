@@ -1,0 +1,8 @@
+flowchart TD
+  A[User nhập Email] --> B[Submit]
+  B --> C[Validate email]
+  C --> D{Hợp lệ?}
+  D -- No --> E[Hiện lỗi]
+  D -- Yes --> F[Overlay Loading]
+  F --> G[Overlay Success]
+  G --> H[Reset form]

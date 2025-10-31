@@ -354,12 +354,14 @@ sellerPhoneInput.addEventListener('input', () => {
 let uploadedImages = [];
 
 // Browse button click handler
-browseBtn.addEventListener('click', () => {
+browseBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     carImagesInput.click();
 });
 
 // Drag and drop handlers
-dragDropZone.addEventListener('click', () => {
+dragDropZone.addEventListener('click', (e) => {
+    e.preventDefault();
     carImagesInput.click();
 });
 
@@ -814,7 +816,8 @@ function animateCounter(element, targetValue) {
 // AI Description Suggestion
 // ===================================
 
-aiSuggestionBtn.addEventListener('click', () => {
+aiSuggestionBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     const brand = brandInput.value;
     const model = modelInput.value;
     const year = yearInput.value;
@@ -877,7 +880,8 @@ document.getElementById('mobile-tab').addEventListener('shown.bs.tab', updateMob
 
 let isDraftMode = false;
 
-saveDraftBtn.addEventListener('click', () => {
+saveDraftBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     // If in draft mode, load the draft
     if (isDraftMode) {
         const draft = localStorage.getItem('carListingDraft');
@@ -978,7 +982,8 @@ function loadDraft() {
 }
 
 // Clear form button
-clearFormBtn.addEventListener('click', () => {
+clearFormBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     // Show confirmation toast first
     showToast('warning', 'Confirm Clear', 'Click again to confirm clearing all form data', 3000);
     
@@ -1489,17 +1494,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
-
-// Add loading state to submit button
-if (sellCarForm) {
-    const submitBtn = sellCarForm.querySelector('button[type="submit"]');
-    sellCarForm.addEventListener('submit', function() {
-        if (submitBtn) {
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
-            submitBtn.disabled = true;
-        }
-    });
-}
 
 // Add success animation to completed steps
 stepItems.forEach(step => {

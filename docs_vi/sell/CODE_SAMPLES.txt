@@ -1,0 +1,379 @@
+Sell - Code & Bootstrap chi tiết
+================================
+
+JS chính và vai trò
+-------------------
+- pages/sell/sell-js/sell.js
+  - populateYearDropdown(), updateProgressSteps(), updateFormProgress()
+  - handleImageFiles(), renderImagePreviews() với drag&drop
+  - validatePhone(), validateEmail(), showToast()
+  - updatePriceSuggestion(), checkPriceComparison(), updateStatistics()
+  - initializeTooltips(), initializeScrollProgress()
+  - save/load draft (localStorage), reset, submit mô phỏng
+- assets/js/select-enhance.js: panel select (portal, drop-up, wheel lock)
+
+Bootstrap sử dụng
+-----------------
+- Forms: .form-control, .form-select, .form-check
+- Buttons: .btn, .btn-primary/outline
+- Cards: .card, .card-header, .card-body
+- Badges: .badge, .text-bg-*
+- Progress: .progress, .progress-bar
+- Grid/Layout & Utilities: .container, .row, .col-*, .d-flex, .gap-*, .shadow, .rounded
+- Tooltips: class .tooltip (tự cài), hoặc tuỳ chỉnh JS
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích chi tiết)
+------------------------------------------------------
+1) Gợi ý giá theo brand/year/mileage/condition
+/**
+ * Chức năng: Tính toán khoảng giá đề xuất dựa trên thông tin xe
+ * Tác dụng: Giúp người dùng định giá hợp lý, tăng tỷ lệ bán thành công
+ * Công thức: BasePrice * (1 - depreciation) * mileageFactor * conditionMultiplier
+ * Bootstrap: .badge.text-bg-info hiển thị khoảng giá
+ */
+function updatePriceSuggestion() {
+  // Lấy thông tin từ form
+  const brand = $('#brand')?.value || 'other'; // Hãng xe (luxury/premium/economy/other)
+  const year = parseInt($('#year')?.value || new Date().getFullYear());
+  const mileage = parseInt($('#mileage')?.value || 0); // Số km đã chạy
+  const condition = $('#condition')?.value || 'good'; // Tình trạng (excellent/good/fair/poor)
+
+  // Bước 1: Giá cơ sở theo hãng
+  const baseMap = { 
+    luxury: 120_000,   // Xe sang: Mercedes, BMW, Audi
+    premium: 70_000,   // Xe cao cấp: Honda, Toyota
+    economy: 30_000,   // Xe phổ thông
+    other: 45_000      // Khác
+  };
+  const base = baseMap[brand] ?? baseMap.other;
+
+  // Bước 2: Khấu hao theo tuổi xe (6%/năm, tối đa 60%)
+  const age = Math.max(0, new Date().getFullYear() - year);
+  const depreciation = Math.min(0.6, age * 0.06); 
+  let price = base * (1 - depreciation);
+
+  // Bước 3: Ảnh hưởng của số km (giảm 5% mỗi 50k km, tối đa 30%)
+  const mileageFactor = 1 - Math.min(0.3, Math.floor(mileage / 50_000) * 0.05);
+  price *= mileageFactor;
+
+  // Bước 4: Hệ số tình trạng xe
+  const condMap = { 
+    excellent: 1.1,  // +10% nếu xe xuất sắc
+    good: 1.0,       // Chuẩn
+    fair: 0.9,       // -10% nếu xe khá
+    poor: 0.8        // -20% nếu xe kém
+  };
+  price *= condMap[condition] ?? 1.0;
+
+  // Bước 5: Tạo khoảng giá (±5%)
+  const min = Math.round(price * 0.95);
+  const max = Math.round(price * 1.05);
+  
+  // Hiển thị kết quả
+  $('#price-range').textContent = `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+  $('#price-range').dataset.min = min; // Lưu để so sánh sau
+  $('#price-range').dataset.max = max;
+}
+
+2) So sánh giá nhập vs gợi ý
+/**
+ * Chức năng: Đánh giá giá người dùng nhập so với khoảng đề xuất
+ * Tác dụng: Cảnh báo nếu giá quá cao/thấp, giúp tăng khả năng bán
+ * Bootstrap: .badge.text-bg-info/warning/success cho từng trạng thái
+ */
+function checkPriceComparison() {
+  const val = parseInt($('#price')?.value || 0); // Giá người dùng nhập
+  const min = parseInt($('#price-range')?.dataset.min || 0);
+  const max = parseInt($('#price-range')?.dataset.max || 0);
+  const el = $('#priceComparison'); // Badge hiển thị
+  
+  if (!val || !min || !max || !el) return; // Thiếu dữ liệu -> skip
+  
+  // Reset classes
+  el.className = 'badge';
+  
+  // So sánh và hiển thị
+  if (val < min) {
+    el.classList.add('text-bg-info'); // Màu xanh: Thấp hơn
+    el.textContent = 'Below Range (Thấp hơn)';
+  } else if (val > max) {
+    el.classList.add('text-bg-warning'); // Màu vàng: Cao hơn
+    el.textContent = 'Above Range (Cao hơn)';
+  } else {
+    el.classList.add('text-bg-success'); // Màu xanh lá: Hợp lý
+    el.textContent = 'Fair Price (Hợp lý)';
+  }
+}
+
+3) Upload ảnh + preview + drag&drop
+/**
+ * Mảng lưu trữ ảnh đã upload (dạng data URL)
+ */
+const uploadedImages = [];
+
+/**
+ * Chức năng: Xử lý file ảnh upload
+ * Tác dụng: Kiểm tra định dạng, kích thước, đọc thành data URL
+ * Giới hạn: Chỉ nhận image/*, tối đa 5MB/file
+ */
+function handleImageFiles(files) {
+  [...files].forEach(file => {
+    // Bước 1: Kiểm tra loại file và kích thước
+    if (!file.type.startsWith('image/')) {
+      showToast('error', 'Lỗi', 'Chỉ nhận file ảnh');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+      showToast('error', 'Lỗi', `File "${file.name}" quá lớn (>5MB)`);
+      return;
+    }
+    
+    // Bước 2: Đọc file thành data URL (base64)
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImages.push({ 
+        name: file.name, 
+        dataUrl: e.target.result // data:image/jpeg;base64,...
+      });
+      renderImagePreviews(); // Cập nhật UI
+      updateFormProgress(); // Cập nhật thanh tiến độ
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Chức năng: Vẽ lại danh sách preview ảnh với khả năng drag&drop
+ * Tác dụng: Người dùng có thể sắp xếp thứ tự ảnh, xoá ảnh không cần
+ * Bootstrap: .card.shadow-sm cho mỗi thumb, .btn-sm.btn-outline-danger cho nút xoá
+ */
+function renderImagePreviews() {
+  const wrap = $('#imagePreview'); // Container
+  wrap.innerHTML = ''; // Xoá nội dung cũ
+  
+  uploadedImages.forEach((img, idx) => {
+    // Tạo card preview cho mỗi ảnh
+    const item = document.createElement('div');
+    item.className = 'thumb card shadow-sm';
+    item.draggable = true; // Cho phép kéo
+    item.innerHTML = `
+      <img src="${img.dataUrl}" class="card-img-top" alt="${img.name}">
+      <div class="card-body p-2 d-flex justify-content-between align-items-center">
+        <span class="small text-muted">#${idx + 1}</span>
+        <button class="btn btn-sm btn-outline-danger" data-remove="${idx}">
+          <i class="bi bi-trash"></i> Xoá
+        </button>
+      </div>`;
+    
+    // Drag start: lưu index nguồn
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', idx);
+      item.classList.add('dragging');
+    });
+    
+    // Drag end: xoá visual feedback
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+    
+    // Drop: hoán đổi vị trí
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      const from = +e.dataTransfer.getData('text/plain');
+      const to = idx;
+      if (from === to) return;
+      
+      // Di chuyển phần tử trong mảng
+      const [moved] = uploadedImages.splice(from, 1);
+      uploadedImages.splice(to, 0, moved);
+      
+      renderImagePreviews(); // Vẽ lại
+    });
+    
+    // Drag over: cho phép drop
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      item.classList.add('drag-over');
+    });
+    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+    
+    wrap.appendChild(item);
+  });
+  
+  // Xử lý nút xoá (event delegation)
+  wrap.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove]');
+    if (!btn) return;
+    uploadedImages.splice(+btn.dataset.remove, 1);
+    renderImagePreviews();
+  });
+  
+  // Cập nhật ảnh chính trong preview
+  if (uploadedImages.length > 0) {
+    $('#preview-main-image').src = uploadedImages[0].dataUrl;
+  }
+}
+
+4) Tính tiến độ biểu mẫu
+/**
+ * Chức năng: Tính % hoàn thành biểu mẫu dựa trên các trường bắt buộc
+ * Tác dụng: Khuyến khích người dùng điền đầy đủ, hiển thị tiến độ trực quan
+ * Bootstrap: .progress, .progress-bar với bg-success/warning/danger
+ */
+function updateFormProgress() {
+  // Lấy tất cả input/select bắt buộc (có class .required trên parent)
+  const required = $$('.required input, .required select, .required textarea');
+  
+  // Đếm số trường đã điền
+  const filled = [...required].filter(el => {
+    if (el.type === 'file') return el.files?.length > 0; // File: kiểm tra có chọn file
+    return el.value?.trim(); // Text/Select: kiểm tra có giá trị
+  }).length;
+  
+  // Tính phần trăm
+  const pct = Math.round((filled / required.length) * 100);
+  
+  // Cập nhật progress bar
+  const bar = $('#formProgress .progress-bar');
+  const barTop = $('#formProgressTop .progress-bar');
+  
+  [bar, barTop].forEach(b => {
+    if (!b) return;
+    b.style.width = pct + '%';
+    b.textContent = pct + '%';
+    
+    // Đổi màu theo ngưỡng
+    b.className = 'progress-bar'; // Reset
+    if (pct >= 66) b.classList.add('bg-success');      // Xanh lá: tốt
+    else if (pct >= 33) b.classList.add('bg-warning'); // Vàng: trung bình
+    else b.classList.add('bg-danger');                 // Đỏ: còn thiếu nhiều
+  });
+  
+  // Hiển thị số trường đã điền
+  $('#progress-text').textContent = `${filled}/${required.length} trường`;
+}
+
+5) Validate cơ bản (điện thoại VN + email)
+/**
+ * Regex kiểm tra số điện thoại Việt Nam
+ * Format: 0 hoặc +84, theo sau là đầu số (3/5/7/8/9) và 8 chữ số
+ */
+const PHONE_VN = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
+
+/**
+ * Chức năng: Kiểm tra số điện thoại hợp lệ
+ * Tác dụng: Ngăn submit form nếu phone sai định dạng
+ */
+function validatePhone(v) { 
+  const cleaned = (v || '').replace(/\s|-/g, ''); // Xoá khoảng trắng và dấu -
+  return PHONE_VN.test(cleaned); 
+}
+
+/**
+ * Chức năng: Kiểm tra email hợp lệ
+ * Regex: user@domain.ext (đơn giản)
+ */
+function validateEmail(v) { 
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || ''); 
+}
+
+/**
+ * Hiển thị lỗi validate trực tiếp dưới input
+ * Bootstrap: .invalid-feedback (hidden mặc định, hiện khi input.is-invalid)
+ */
+function showInputError(input, message) {
+  input.classList.add('is-invalid'); // Bootstrap class
+  let feedback = input.nextElementSibling;
+  if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+    feedback = document.createElement('div');
+    feedback.className = 'invalid-feedback';
+    input.parentNode.appendChild(feedback);
+  }
+  feedback.textContent = message;
+}
+
+function clearInputError(input) {
+  input.classList.remove('is-invalid');
+  const feedback = input.nextElementSibling;
+  if (feedback?.classList.contains('invalid-feedback')) {
+    feedback.textContent = '';
+  }
+}
+
+// Ví dụ sử dụng khi submit
+$('#phone')?.addEventListener('blur', (e) => {
+  const val = e.target.value.trim();
+  if (val && !validatePhone(val)) {
+    showInputError(e.target, 'Số điện thoại không hợp lệ (VD: 0912345678)');
+  } else {
+    clearInputError(e.target);
+  }
+});
+
+6) Toast nhỏ gọn với progress bar
+/**
+ * Chức năng: Hiển thị thông báo nhỏ góc màn hình (toast)
+ * Tác dụng: Phản hồi tức thì các hành động (lưu, submit, lỗi...)
+ * Tham số:
+ *   - type: 'success'|'error'|'info'|'warning' -> đổi màu và icon
+ *   - title: Tiêu đề ngắn gọn
+ *   - msg: Nội dung chi tiết
+ *   - duration: Thời gian hiển thị (ms)
+ * Bootstrap: Không dùng .toast của Bootstrap, tự tạo để linh hoạt hơn
+ */
+function showToast(type = 'info', title = '', msg = '', duration = 2500) {
+  // Tạo/tìm container
+  let cont = document.querySelector('.toast-container');
+  if (!cont) {
+    cont = document.createElement('div');
+    cont.className = 'toast-container position-fixed top-0 end-0 p-3';
+    cont.style.zIndex = '10050'; // Cao hơn modal
+    document.body.appendChild(cont);
+  }
+  
+  // Icon theo type
+  const icons = {
+    success: '<i class="bi bi-check-circle-fill text-success"></i>',
+    error: '<i class="bi bi-x-circle-fill text-danger"></i>',
+    warning: '<i class="bi bi-exclamation-triangle-fill text-warning"></i>',
+    info: '<i class="bi bi-info-circle-fill text-info"></i>'
+  };
+  
+  // Tạo toast element
+  const el = document.createElement('div');
+  el.className = `toast-item shadow ${type}`;
+  el.innerHTML = `
+    <div class="toast-header d-flex align-items-center gap-2">
+      ${icons[type] || icons.info}
+      <strong class="me-auto">${title}</strong>
+      <button class="btn-close btn-sm" data-dismiss></button>
+    </div>
+    <div class="toast-body">${msg}</div>
+    <div class="toast-progress">
+      <div class="toast-progress-bar bg-${type === 'error' ? 'danger' : type}"></div>
+    </div>`;
+  
+  // Thêm vào container
+  cont.appendChild(el);
+  
+  // Animate progress bar
+  const progressBar = el.querySelector('.toast-progress-bar');
+  progressBar.style.transition = `width ${duration}ms linear`;
+  setTimeout(() => progressBar.style.width = '0%', 10);
+  
+  // Auto remove
+  const timer = setTimeout(() => el.remove(), duration);
+  
+  // Nút đóng thủ công
+  el.querySelector('[data-dismiss]')?.addEventListener('click', () => {
+    clearTimeout(timer);
+    el.remove();
+  });
+}
+
+// Ví dụ sử dụng
+showToast('success', 'Thành công', 'Đã lưu nháp thành công');
+showToast('error', 'Lỗi', 'Vui lòng điền đầy đủ thông tin bắt buộc');
+
+Lưu ý
+-----
+- Các class Bootstrap như .badge.text-bg-* và .progress-bar.bg-* được dùng để phản hồi nhanh trạng thái.
+- Kéo thả: cân nhắc thêm visual cue khi dragged-over (thêm .border-primary chẳng hạn).

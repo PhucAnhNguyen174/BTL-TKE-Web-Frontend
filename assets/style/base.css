@@ -30,6 +30,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Lock body scroll when modal/overlay is active - improved version */
+body.no-scroll {
+  overflow: hidden !important;
+  /* Using padding-right to prevent layout shift when scrollbar disappears */
+  padding-right: var(--scrollbar-width, 0);
+}
+
 /* Page fade-in effect */
 .page-fade-in { animation: pageEnter 1.2s ease-in-out; }
 @keyframes pageEnter { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }

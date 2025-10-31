@@ -339,32 +339,57 @@ function showToast(type, title, message, duration = 5000) {
 }
 
 // ===================================
-// DOM Elements
+// DOM Elements - Login Page
 // ===================================
-const loginForm = document.getElementById('loginForm');
-const emailEl = document.getElementById('email');
-const passEl = document.getElementById('password');
-const alertEl = document.getElementById('alert');
-const loginBtn = document.getElementById('loginBtn');
-const googleBtn = document.getElementById('googleBtn');
-const xBtn = document.getElementById('xBtn');
-const togglePassword = document.getElementById('togglePassword');
-const rememberMeCheckbox = document.getElementById('rememberMe');
-const loadingOverlay = document.getElementById('loadingOverlay');
-const successOverlay = document.getElementById('successOverlay');
+// Only run login page code if we're on the login page
+if (document.getElementById('loginForm')) {
+  const loginForm = document.getElementById('loginForm');
+  const emailEl = document.getElementById('email');
+  const passEl = document.getElementById('password');
+  const alertEl = document.getElementById('alert');
+  const loginBtn = document.getElementById('loginBtn');
+  const googleBtn = document.getElementById('googleBtn');
+  const facebookBtn = document.getElementById('facebookBtn');
+  const xBtn = document.getElementById('xBtn');
+  const telegramBtn = document.getElementById('telegramBtn');
+  const togglePassword = document.getElementById('togglePassword');
+  const rememberMeCheckbox = document.getElementById('rememberMe');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const successOverlay = document.getElementById('successOverlay');
 
-// ===================================
-// Toggle Password Visibility
-// ===================================
-if (togglePassword) {
-  togglePassword.addEventListener('click', () => {
-    const type = passEl.type === 'password' ? 'text' : 'password';
-    passEl.type = type;
-    const icon = togglePassword.querySelector('i');
-    icon.classList.toggle('fa-eye');
-    icon.classList.toggle('fa-eye-slash');
-  });
-}
+  // ===================================
+  // Toggle Password Visibility
+  // ===================================
+  if (togglePassword && passEl) {
+    console.log('Login: Toggle password button found:', togglePassword);
+    console.log('Login: Password input found:', passEl);
+    
+    togglePassword.addEventListener('click', function(e) {
+      e.preventDefault(); // Prevent form submission
+      e.stopPropagation(); // Stop event bubbling
+      
+      console.log('Login: Toggle password clicked!');
+      const type = passEl.type === 'password' ? 'text' : 'password';
+      passEl.type = type;
+      console.log('Login: Password type changed to:', type);
+      
+      const icon = togglePassword.querySelector('i');
+      
+      // Replace classes properly
+      if (type === 'text') {
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  } else {
+    console.warn('Login: Toggle password elements not found:', {
+      togglePassword: !!togglePassword,
+      passEl: !!passEl
+    });
+  }
 
 // ===================================
 // Load Remembered Email & Check if Already Logged In
@@ -491,6 +516,7 @@ loginForm.addEventListener('submit', function(evt){
     showAlert(loginResult.message, 'success');
     
     if (loadingOverlay) {
+      document.body.classList.add('no-scroll'); // Lock body scroll
       loadingOverlay.classList.remove('hidden');
     }
     
@@ -503,6 +529,7 @@ loginForm.addEventListener('submit', function(evt){
       }
       
       setTimeout(() => {
+        document.body.classList.remove('no-scroll'); // Unlock before redirect
         window.location.href = '../index/index.html';
       }, 1200);
     }, 800);
@@ -516,14 +543,30 @@ loginForm.addEventListener('submit', function(evt){
 // Social Login Buttons
 // ===================================
 if (googleBtn) {
-  googleBtn.addEventListener('click', function() {
+  googleBtn.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default action
     showAlert('Google login feature is under development...', 'success');
   });
 }
 
+if (facebookBtn) {
+  facebookBtn.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default action
+    showAlert('Facebook login feature is under development...', 'success');
+  });
+}
+
 if (xBtn) {
-  xBtn.addEventListener('click', function() {
+  xBtn.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default action
     showAlert('X (Twitter) login feature is under development...', 'success');
+  });
+}
+
+if (telegramBtn) {
+  telegramBtn.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default action
+    showAlert('Telegram login feature is under development...', 'success');
   });
 }
 
@@ -557,8 +600,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 });
+
+} // End of login page code
+
+// ===================================
 // Forgot password page script
 // Purpose: Validate email and simulate sending reset instructions.
+// ===================================
 
 // ===================================
 // Toast Notification System
@@ -612,24 +660,26 @@ function showToast(type, title, message, duration = 5000) {
   }, duration);
 }
 
-const form    = document.getElementById('forgotForm');
-const emailEl = document.getElementById('email');
-const alertEl = document.getElementById('alert');
-const sendBtn = document.getElementById('sendBtn');
-const emailValidation = document.getElementById('emailValidation');
-const loadingOverlay = document.getElementById('loadingOverlay');
-const successOverlay = document.getElementById('successOverlay');
+// Only run forgot page code if we're on the forgot page
+if (document.getElementById('forgotForm')) {
+  const form    = document.getElementById('forgotForm');
+  const emailEl = document.getElementById('email');
+  const alertEl = document.getElementById('alert');
+  const sendBtn = document.getElementById('sendBtn');
+  const emailValidation = document.getElementById('emailValidation');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const successOverlay = document.getElementById('successOverlay');
 
-function showAlert(text, type='success') {
-  alertEl.textContent = text;
-  alertEl.classList.remove('hidden','success','error');
-  alertEl.classList.add(type);
-}
+  function showAlert(text, type='success') {
+    alertEl.textContent = text;
+    alertEl.classList.remove('hidden','success','error');
+    alertEl.classList.add(type);
+  }
 
-function isValidEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
-}
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
 
 function updateBtnState() {
   sendBtn.disabled = !emailEl.value.trim();
@@ -657,7 +707,8 @@ form.addEventListener('submit', (e) => {
   if (!eVal) { showAlert('Please enter your email!', 'error'); shake(); return; }
   if (!isValidEmail(eVal)) { showAlert('Invalid email format!', 'error'); shake(); return; }
 
-  // Show loading overlay
+  // Show loading overlay and lock scroll
+  document.body.classList.add('no-scroll');
   loadingOverlay.classList.remove('hidden');
   
   setTimeout(() => {
@@ -673,6 +724,7 @@ form.addEventListener('submit', (e) => {
     // Hide success after delay
     setTimeout(() => {
       successOverlay.classList.add('hidden');
+      document.body.classList.remove('no-scroll'); // Unlock scroll
       showAlert('✅ Password reset instructions sent!', 'success');
     }, 1200);
   }, 800);
@@ -702,9 +754,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (!t) return; onMove(t.clientX, t.clientY); }, { passive: true });
   }
 });
+
+} // End of forgot page code
+
+// ===================================
 // Register page script
 // Purpose: Client-side validation for required fields, email format, and password match; save to localStorage
 // Note: auth.js must be loaded before this script
+// ===================================
 
 // ===================================
 // Toast Notification System
@@ -758,40 +815,78 @@ function showToast(type, title, message, duration = 5000) {
   }, duration);
 }
 
-const form = document.getElementById('registerForm');
-const fullname = document.getElementById('fullname');
-const email = document.getElementById('email');
-const password = document.getElementById('password');
-const confirmPassword = document.getElementById('confirm-password');
-const errorMsg = document.getElementById('error-msg');
-const loadingMsg = document.getElementById('loading-msg');
-const togglePassword = document.getElementById('togglePassword');
-const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-const emailValidation = document.getElementById('emailValidation');
-const passwordStrengthEl = document.getElementById('passwordStrength');
-const strengthBar = document.getElementById('strengthBar');
-const strengthText = document.getElementById('strengthText');
+// Only run register page code if we're on the register page
+if (document.getElementById('registerForm')) {
+  const form = document.getElementById('registerForm');
+  const fullname = document.getElementById('fullname');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirm-password');
+  const errorMsg = document.getElementById('error-msg');
+  const loadingMsg = document.getElementById('loading-msg');
+  const togglePassword = document.getElementById('togglePassword');
+  const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+  const emailValidation = document.getElementById('emailValidation');
+  const passwordStrengthEl = document.getElementById('passwordStrength');
+  const strengthBar = document.getElementById('strengthBar');
+  const strengthText = document.getElementById('strengthText');
 const loadingOverlay = document.getElementById('loadingOverlay');
 const successOverlay = document.getElementById('successOverlay');
 
 // Toggle password visibility for both password fields
-if (togglePassword) {
-  togglePassword.addEventListener('click', () => {
+if (togglePassword && password) {
+  console.log('Register: Toggle password button found');
+  
+  togglePassword.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent any default action
+    e.stopPropagation();
+    
+    console.log('Register: Password toggle clicked');
     const type = password.type === 'password' ? 'text' : 'password';
     password.type = type;
     const icon = togglePassword.querySelector('i');
-    icon.classList.toggle('fa-eye');
-    icon.classList.toggle('fa-eye-slash');
+    
+    // Properly replace icon classes
+    if (type === 'text') {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+} else {
+  console.warn('Register: Toggle password not found', {
+    togglePassword: !!togglePassword,
+    password: !!password
   });
 }
 
-if (toggleConfirmPassword) {
-  toggleConfirmPassword.addEventListener('click', () => {
+if (toggleConfirmPassword && confirmPassword) {
+  console.log('Register: Toggle confirm password button found');
+  
+  toggleConfirmPassword.addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent any default action
+    e.stopPropagation();
+    
+    console.log('Register: Confirm password toggle clicked');
     const type = confirmPassword.type === 'password' ? 'text' : 'password';
     confirmPassword.type = type;
     const icon = toggleConfirmPassword.querySelector('i');
-    icon.classList.toggle('fa-eye');
-    icon.classList.toggle('fa-eye-slash');
+    
+    // Properly replace icon classes
+    if (type === 'text') {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+} else {
+  console.warn('Register: Toggle confirm password not found', {
+    toggleConfirmPassword: !!toggleConfirmPassword,
+    confirmPassword: !!confirmPassword
   });
 }
 
@@ -915,7 +1010,8 @@ form.addEventListener('submit', (e) => {
     return;
   }
 
-  // ⏳ Show loading overlay
+  // ⏳ Show loading overlay and lock scroll
+  document.body.classList.add('no-scroll');
   loadingOverlay.classList.remove('hidden');
   
   setTimeout(() => {
@@ -929,6 +1025,7 @@ form.addEventListener('submit', (e) => {
     passwordStrengthEl.classList.remove('visible');
     
     setTimeout(() => {
+      document.body.classList.remove('no-scroll'); // Unlock before redirect
       window.location.href = "../login/login.html";
     }, 1200);
   }, 800);
@@ -1006,3 +1103,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 })();
+
+} // End of register page code

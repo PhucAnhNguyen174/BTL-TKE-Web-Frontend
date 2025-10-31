@@ -1,0 +1,210 @@
+Auth/Register - Code & Bootstrap chi tiết
+========================================
+
+JS chính và vai trò
+-------------------
+- pages/auth/auth-js/auth.js
+  - registerUser(fullname, email, password)
+  - Kiểm tra tồn tại email, validate cơ bản, lưu localStorage
+
+Bootstrap sử dụng
+-----------------
+- Forms: .form-control, .form-text (hint), .form-check
+- Buttons: .btn, .btn-success
+- Cards: .card
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích chi tiết)
+------------------------------------------------------
+1) Đánh giá độ mạnh mật khẩu
+/**
+ * Chức năng: Tính điểm độ mạnh của password (0-4)
+ * Tác dụng: Khuyến khích người dùng dùng mật khẩu an toàn
+ * Tiêu chí: độ dài >=8, chữ hoa, số, ký tự đặc biệt
+ * UI: Progress bar màu thay đổi theo điểm (đỏ -> vàng -> xanh)
+ */
+function passwordStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;           // +1 nếu đủ dài
+  if (/[A-Z]/.test(pw)) score++;         // +1 nếu có chữ hoa
+  if (/[0-9]/.test(pw)) score++;         // +1 nếu có số
+  if (/[^A-Za-z0-9]/.test(pw)) score++; // +1 nếu có ký tự đặc biệt
+  return score; // 0: rất yếu, 1-2: yếu, 3: vừa, 4: mạnh
+}
+
+/**
+ * Cập nhật UI strength meter
+ * Bootstrap: .progress, .progress-bar với bg-danger/warning/success
+ */
+function updatePasswordStrength(pw) {
+  const score = passwordStrength(pw);
+  const bar = $('#passwordStrengthBar');
+  const text = $('#passwordStrengthText');
+  
+  if (!bar || !text) return;
+  
+  // Cập nhật chiều rộng và màu
+  const widths = [0, 25, 50, 75, 100]; // % theo score
+  const colors = ['', 'bg-danger', 'bg-warning', 'bg-warning', 'bg-success'];
+  const labels = ['', 'Rất yếu', 'Yếu', 'Trung bình', 'Mạnh'];
+  
+  bar.style.width = widths[score] + '%';
+  bar.className = 'progress-bar ' + colors[score];
+  text.textContent = labels[score];
+}
+
+// Gắn sự kiện
+$('#password')?.addEventListener('input', (e) => {
+  updatePasswordStrength(e.target.value);
+});
+
+2) Đăng ký người dùng mới
+/**
+ * Chức năng: Tạo tài khoản người dùng mới
+ * Tác dụng: Validate và lưu vào localStorage (demo)
+ * Lưu ý: Production cần gửi API backend + hash password
+ * Trả về: { ok: boolean, msg: string }
+ */
+function registerUser(fullname, email, password) {
+  // Bước 1: Validate thông tin cơ bản
+  if (!fullname || !email || !password) {
+    return { ok: false, msg: 'Vui lòng điền đầy đủ thông tin' };
+  }
+  
+  // Bước 2: Kiểm tra email format
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, msg: 'Email không đúng định dạng' };
+  }
+  
+  // Bước 3: Kiểm tra độ dài password tối thiểu
+  if (password.length < 6) {
+    return { ok: false, msg: 'Mật khẩu phải có ít nhất 6 ký tự' };
+  }
+  
+  // Bước 4: Lấy danh sách users hiện có
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  
+  // Bước 5: Kiểm tra email đã tồn tại chưa
+  if (users.some(u => u.email === email)) {
+    return { ok: false, msg: 'Email đã được đăng ký' };
+  }
+  
+  // Bước 6: Tạo user object mới
+  const newUser = {
+    id: Date.now(),           // ID unique (timestamp)
+    fullname,
+    email,
+    password,                 // Demo: lưu plaintext (thực tế phải hash)
+    createdAt: new Date().toISOString()
+  };
+  
+  // Bước 7: Thêm vào danh sách và lưu
+  users.push(newUser);
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  return { ok: true, msg: 'Đăng ký thành công' };
+}
+
+3) Luồng submit form (chi tiết)
+/**
+ * Chức năng: Xử lý submit form đăng ký
+ * Tác dụng: Validate -> Register -> Overlay -> Redirect to Login
+ * Bootstrap: .form-control.is-invalid cho lỗi từng trường
+ */
+const form = document.querySelector('#registerForm');
+
+form?.addEventListener('submit', (e) => {
+  e.preventDefault(); // Ngăn reload trang
+  
+  // Bước 1: Thu thập dữ liệu
+  const fullname = $('#fullname').value.trim();
+  const email = $('#email').value.trim();
+  const password = $('#password').value;
+  const confirm = $('#confirmPassword').value;
+  
+  // Bước 2: Validate từng trường
+  let hasError = false;
+  
+  // Kiểm tra họ tên
+  if (!fullname) {
+    showFieldError($('#fullname'), 'Vui lòng nhập họ tên');
+    hasError = true;
+  } else {
+    clearFieldError($('#fullname'));
+  }
+  
+  // Kiểm tra email
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showFieldError($('#email'), 'Email không đúng định dạng');
+    hasError = true;
+  } else {
+    clearFieldError($('#email'));
+  }
+  
+  // Kiểm tra password
+  if (!password || password.length < 6) {
+    showFieldError($('#password'), 'Mật khẩu phải có ít nhất 6 ký tự');
+    hasError = true;
+  } else {
+    clearFieldError($('#password'));
+  }
+  
+  // Kiểm tra password khớp
+  if (password !== confirm) {
+    showFieldError($('#confirmPassword'), 'Mật khẩu không khớp');
+    hasError = true;
+  } else {
+    clearFieldError($('#confirmPassword'));
+  }
+  
+  // Dừng nếu có lỗi
+  if (hasError) {
+    showToast('error', 'Lỗi', 'Vui lòng kiểm tra lại thông tin');
+    return;
+  }
+  
+  // Bước 3: Đăng ký
+  const result = registerUser(fullname, email, password);
+  if (!result.ok) {
+    // Lỗi email đã tồn tại
+    showFieldError($('#email'), result.msg);
+    showToast('error', 'Lỗi đăng ký', result.msg);
+    $('#email').focus();
+    return;
+  }
+  
+  // Bước 4: Thành công -> Overlay -> Redirect
+  showOverlay('Đang tạo tài khoản...');
+  
+  setTimeout(() => {
+    hideOverlay();
+    showOverlay('Đăng ký thành công!', 'success');
+    
+    setTimeout(() => {
+      // Chuyển sang trang login
+      window.location.href = './login.html';
+    }, 800);
+  }, 900);
+});
+
+/**
+ * Hiển thị lỗi trên từng input
+ * Bootstrap: .is-invalid + .invalid-feedback
+ */
+function showFieldError(input, message) {
+  input.classList.add('is-invalid');
+  let feedback = input.nextElementSibling;
+  if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+    feedback = document.createElement('div');
+    feedback.className = 'invalid-feedback';
+    input.parentNode.appendChild(feedback);
+  }
+  feedback.textContent = message;
+}
+
+function clearFieldError(input) {
+  input.classList.remove('is-invalid');
+  const feedback = input.nextElementSibling;
+  if (feedback?.classList.contains('invalid-feedback')) {
+    feedback.textContent = '';
+  }
+}

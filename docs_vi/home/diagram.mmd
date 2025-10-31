@@ -1,0 +1,9 @@
+flowchart LR
+  A[DOMContentLoaded] --> B[Thiết lập IntersectionObservers]
+  A --> C[Tăng cường bộ lọc landing]
+  A --> D[Gắn handler scroll]
+  C --> E[Người dùng mở select]
+  E --> F[Panel nổi + wheel lock]
+  F --> G[Chọn option -> cập nhật filter]
+  G --> H[Lọc Featured] --> I[Cuộn đến #featured]
+  D --> J[Navbar hiện/ẩn] --> K[Section reveal khi vào viewport]

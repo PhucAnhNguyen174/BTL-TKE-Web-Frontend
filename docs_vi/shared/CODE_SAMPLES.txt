@@ -1,0 +1,139 @@
+Shared - Code & Bootstrap chi tiết
+=================================
+
+Cấu trúc JS liên quan
+---------------------
+- assets/js/utils.js
+  - function $(selector, root=document): truy vấn phần tử đầu tiên
+  - function $$(selector, root=document): truy vấn danh sách NodeList
+  - function debounce(fn, wait): chống dội sự kiện (scroll/input)
+- assets/js/navbar.js
+  - enableWheelLock(container, scrollable)
+  - lockBodyScroll()/unlockBodyScroll()
+  - smoothScrollTo(selector)
+  - positionMenuPanel(anchor)
+  - openMenu()/closeMenu()
+- assets/js/select-enhance.js
+  - enableWheelLock(container, list)
+  - closeAllPanels(except)
+  - enhanceSelects(): tạo trigger + panel (portal) cho <select>
+  - openPanel()/closePanel(); updatePanelPosition()
+
+Bootstrap thành phần sử dụng
+----------------------------
+- Navbar: .navbar, .navbar-brand, .navbar-toggler, .navbar-collapse
+- Grid/Layout: .container, .row, .col-*
+- Buttons: .btn, .btn-primary/secondary
+- Forms (khi áp dụng cho select mặc định): .form-select, .form-control
+- Utility classes: .d-none, .position-fixed, .shadow, .rounded, .z-*
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích)
+----------------------------------------------
+1) Wheel lock cho panel nổi
+/**
+ * Chức năng: Ngăn cuộn trang chính khi người dùng cuộn trong panel/modal
+ * Tác dụng: Khi panel đạt đầu/cuối, không cho sự kiện wheel lan ra ngoài
+ * Tham số:
+ *   - container: phần tử bọc ngoài (nghe wheel event)
+ *   - scrollable: phần tử có thanh cuộn bên trong
+ */
+function enableWheelLock(container, scrollable) {
+  container.addEventListener('wheel', (e) => {
+    // Kiểm tra xem đang ở đầu hay cuối danh sách
+    const atTop = scrollable.scrollTop === 0 && e.deltaY < 0; // cuộn lên khi đã ở đầu
+    const atBottom = scrollable.scrollHeight - scrollable.clientHeight === scrollable.scrollTop && e.deltaY > 0; // cuộn xuống khi đã ở cuối
+    
+    // Nếu đang ở biên, chặn sự kiện để không cuộn trang nền
+    if (atTop || atBottom) {
+      e.preventDefault();
+    }
+  }, { passive: false }); // passive:false để cho phép preventDefault
+}
+
+2) Cuộn mượt tới section
+/**
+ * Chức năng: Cuộn trang đến một phần tử cụ thể với hiệu ứng mượt
+ * Tác dụng: Khi click vào menu, cuộn đến section tương ứng, tránh bị che bởi navbar cố định
+ * Bootstrap: Navbar cố định (.navbar) có chiều cao cần trừ để không che nội dung
+ */
+function smoothScrollTo(selector) {
+  const el = document.querySelector(selector); // Tìm phần tử đích (vd: #about, #services)
+  if (!el) return; // Nếu không tồn tại, dừng
+  
+  const nav = document.querySelector('.navbar'); // Lấy navbar để tính offset
+  const offset = (nav?.offsetHeight || 0) + 12; // Chiều cao navbar + khoảng cách an toàn (12px)
+  
+  // Tính vị trí cuộn: vị trí hiện tại của phần tử + scroll hiện tại - offset
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  
+  // Cuộn mượt (smooth) đến vị trí
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+3) Portal cho Custom Select (chi tiết)
+/**
+ * Chức năng: Mở panel select và đặt nó vào document.body (portal pattern)
+ * Tác dụng: Tránh panel bị che khuất bởi các phần tử cha có z-index/overflow
+ * Bootstrap: Không dùng .dropdown vì cần kiểm soát hoàn toàn vị trí và z-index
+ */
+function openPanel(trigger, panel) {
+  document.body.appendChild(panel); // Chuyển panel ra ngoài DOM tree gốc (portal)
+  panel.style.position = 'fixed'; // Cố định theo viewport, không theo parent
+  updatePanelPosition(trigger, panel); // Tính toán vị trí dựa trên trigger
+  panel.classList.add('open'); // Thêm class để hiển thị (CSS transition)
+}
+
+/**
+ * Chức năng: Tính toán vị trí tối ưu cho panel (drop-down hay drop-up)
+ * Tác dụng: Đảm bảo panel luôn hiển thị trong viewport, không bị cắt
+ */
+function updatePanelPosition(trigger, panel) {
+  const rect = trigger.getBoundingClientRect(); // Lấy vị trí trigger trên màn hình
+  const gap = 4; // Khoảng cách giữa trigger và panel
+  const viewH = window.innerHeight; // Chiều cao viewport
+  const spaceBelow = viewH - rect.bottom; // Không gian phía dưới trigger
+  
+  // Quyết định drop-up nếu không đủ chỗ phía dưới
+  const preferDropUp = spaceBelow < 220; // Ngưỡng tối thiểu (px)
+  
+  // Tính top: nếu drop-up thì đặt phía trên trigger, ngược lại đặt phía dưới
+  const top = preferDropUp 
+    ? Math.max(8, rect.top - panel.offsetHeight - gap) // Drop-up: trừ chiều cao panel
+    : Math.min(viewH - 8, rect.bottom + gap); // Drop-down: sau trigger
+  
+  // Đặt vị trí và kích thước
+  panel.style.left = `${Math.max(8, rect.left)}px`; // Căn trái, tối thiểu 8px từ mép
+  panel.style.top = `${top}px`;
+  panel.style.minWidth = `${rect.width}px`; // Rộng tối thiểu bằng trigger
+  panel.style.zIndex = '10000'; // Z-index cao để luôn nổi trên
+}
+
+4) Khoá cuộn body khi mở menu/modal
+/**
+ * Chức năng: Ngăn cuộn trang nền khi menu/modal đang mở
+ * Tác dụng: Giữ nội dung cố định, tập trung vào overlay
+ * Bootstrap: Tương tự .modal-open nhưng tự quản lý để tùy chỉnh
+ */
+function lockBodyScroll() {
+  const scrollY = window.scrollY; // Lưu vị trí cuộn hiện tại
+  document.body.style.position = 'fixed'; // Cố định body
+  document.body.style.top = `-${scrollY}px`; // Giữ nguyên vị trí nội dung
+  document.body.style.width = '100%'; // Đảm bảo không bị thu hẹp
+  document.body.style.overflowY = 'scroll'; // Giữ scrollbar để tránh layout shift
+}
+
+function unlockBodyScroll() {
+  const scrollY = document.body.style.top; // Lấy vị trí đã lưu
+  document.body.style.position = ''; // Xoá cố định
+  document.body.style.top = '';
+  document.body.style.width = '';
+  document.body.style.overflowY = '';
+  window.scrollTo(0, parseInt(scrollY || '0') * -1); // Khôi phục vị trí cuộn
+}
+
+Gợi ý kiểm thử nhanh
+---------------------
+- Thu nhỏ chiều cao cửa sổ để kiểm tra drop-up (panel hiện phía trên khi gần đáy).
+- Kéo lăn nhanh trong panel để xác nhận wheel lock hoạt động (trang không cuộn).
+- Mở Section Menu rồi thử cuộn – body phải bị khoá (không nhảy).
+- Resize cửa sổ khi panel đang mở – vị trí panel tự động cập nhật.

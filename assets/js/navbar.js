@@ -29,21 +29,30 @@
     container.dataset.wheelLock = 'enabled';
   }
 
-  // Body scroll lock helpers
+  // Body scroll lock helpers (safe)
   let scrollPosition = 0;
+  let isBodyLocked = false;
   function lockBodyScroll() {
-    scrollPosition = window.pageYOffset;
+    if (isBodyLocked) return;
+    scrollPosition = window.pageYOffset || document.documentElement.scrollTop || 0;
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollPosition}px`;
     document.body.style.width = '100%';
+    isBodyLocked = true;
   }
   function unlockBodyScroll() {
+    if (!isBodyLocked) return;
+    const savedScrollPosition = scrollPosition || 0;
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.width = '';
-    window.scrollTo(0, scrollPosition);
+    isBodyLocked = false;
+    // Use requestAnimationFrame to ensure smooth restore without jumping
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollPosition);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -125,6 +134,7 @@
       open = true; setTriggersExpanded('true');
     }
     function closeMenu() {
+      if (!open) return; // Do nothing if already closed
       menuPanel.classList.remove('open');
       menuPanel.setAttribute('aria-hidden', 'true');
       unlockBodyScroll();
@@ -133,7 +143,12 @@
 
     menuTriggers.forEach(t => t.addEventListener('click', e => { e.preventDefault(); anchorEl = t; open ? closeMenu() : openMenu(); }));
     if (menuCloseBtn) menuCloseBtn.addEventListener('click', closeMenu);
-    document.addEventListener('click', e => { if (!e.target.closest('#sectionMenuPanel') && !e.target.closest('.nav-menu-trigger')) closeMenu(); });
+    document.addEventListener('click', e => {
+      // Only attempt to close if currently open
+      if (open && !e.target.closest('#sectionMenuPanel') && !e.target.closest('.nav-menu-trigger')) {
+        closeMenu();
+      }
+    });
     window.addEventListener('resize', () => { if (open) positionMenuPanel(anchorEl || navbarMenuBtn || menuTriggers[0]); });
   });
 })();

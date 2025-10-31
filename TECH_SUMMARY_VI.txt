@@ -1,0 +1,239 @@
+============================================
+TONG QUAN CONG NGHE (TECH OVERVIEW)
+============================================
+
+Du an: LuxAuto (Buy/Sell Cars)
+Thu muc chinh:
+- assets/ (thu vien + tai nguyen chung)
+- pages/ (cac trang: home, sell, contact, auth)
+
+Thu vien su dung:
+- Bootstrap 5 (CSS/JS) - assets/bootstrap/
+- Bootstrap Icons - assets/bootstrap/font/bootstrap-icons.css
+- Font Awesome - assets/bootstrap/fontawesome/
+- JS tuy chinh: assets/js/ (utils.js, navbar.js, select-enhance.js)
+- CSS tuy chinh: assets/style/ (base.css, header.css) + assets/css/select-enhance.css
+
+Chuc nang noi bat:
+- Navbar/menu phan muc chia se giua cac trang (navbar.js + header.css)
+- Custom Select (portal) tranh loi z-index, keo tha cuon trong panel (select-enhance.js + select-enhance.css)
+- Hieu ung/ho tro UI tren tung trang (home.js, sell.js, contact.js, auth.js)
+
+============================================
+THU MUC CHIA SE (SHARED)
+============================================
+
+1) assets/style/base.css
+- Muc dich: Dinh nghia bien mau, reset, layout nen, hieu ung animation chung.
+- CSS: :root mau chu dao, reset *, body, class page-fade-in, cac helper.
+
+2) assets/style/header.css
+- Muc dich: Kieu dang Navbar, Panel menu phan muc (section menu), trang thai navbar-hidden/navbar-visible, overlay panel.
+- Bootstrap: su dung .navbar, .container, grid/collapse.
+
+3) assets/css/select-enhance.css
+- Muc dich: Kieu dang cho Custom Select (wrapper/panel/list/option), z-index cao (panel ~10000), drop-up.
+- Co them bo bong nhe, kich thuoc toi da, trang thai open/active.
+
+4) assets/js/utils.js
+- Muc dich: Tien ich nho, khong side-effect.
+- Ham: $(sel,root), $$(sel,root), debounce(fn, wait).
+
+5) assets/js/navbar.js
+- Muc dich: Hanh vi Navbar/Section Menu dung chung.
+- Cong nghe: DOMContentLoaded, su kien cuon, tinh toan vi tri panel, lock body scroll, wheel/touch lock noi bo.
+- Ham chinh:
+  + enableWheelLock(container, scrollable): Chan cuon trang khi cuon panel noi bo.
+  + lockBodyScroll()/unlockBodyScroll(): Khoa/moroll body khi mo dong Section Menu.
+  + smoothScrollTo(sel): Cuon den id, tru di chieu cao navbar + khoang cach an toan.
+  + positionMenuPanel(anchor): Dat panel ngay duoi nut MENU, can le trai theo viewport.
+  + openMenu()/closeMenu(): Mo/close panel + aria, cap nhat trigger expanded.
+- Logic: Quet cac section[id], .form-card, .preview-card de tao menu muc luc dong; click se scroll den muc tuong ung.
+
+6) assets/js/select-enhance.js
+- Muc dich: Bien doi <select.filter-enhance> thanh menu tuy chinh co panel doc lap (portal) de tranh stacking context (z-index) va co drop-up khi gan day man hinh.
+- Cong nghe: Tao DOM trigger/panel/list, append panel vao body voi position:fixed khi mo, tinh toan vi tri va max-height, lang nghe resize/scroll; enableWheelLock cho panel list.
+- Ham chinh:
+  + enableWheelLock(container, list)
+  + closeAllPanels(except)
+  + enhanceSelects(): Khoi tao wrapper/trigger/panel/list option; openPanel()/closePanel(); updatePanelPosition().
+- Bootstrap: icon bi-chevron-down (Bootstrap Icons).
+
+============================================
+TRANG HOME (pages/home)
+============================================
+
+Files:
+- index.html: Landing + cac section (featured, why-choose-us, statistics, buy-cars, sell-cars ...), navbar chung, filter o landing (brand/region/price), nut MENU, cac the <section> co id.
+- home-css/home.css: Style landing, card, animation, filter-group, thong bao nho.
+- home-js/home.js: Logic UI
+
+Cong nghe JS/CSS/Bootstrap theo chuc nang:
+- Landing Animation & Navbar (home.js + header.css + Bootstrap):
+  + An/hin landing overlay theo scroll; hien navbar khi nguoi dung cuon xuong.
+  + Them/ly bo class navbar-hidden/navbar-visible.
+- Smooth Scrolling (home.js):
+  + Bat su kien click tren link #, tinh toan offset tru navbar, window.scrollTo behavior:smooth.
+- Nav highlight (home.js):
+  + Danh dau muc hien tai theo data-page.
+- Back-to-top (home.js + home.css):
+  + Hien nut khi scroll>300, click scrollTo top.
+- Landing filters (home.js):
+  + Tu tao custom select (phien ban rieng cho landing) voi wrapper/trigger/panel, enableWheelLock().
+  + Toggle nhom filter (filterToggle/filterGroup) + ripple nhe.
+- Search & Featured filter (home.js):
+  + Thu thap brand/region/price + query, log va cuon den #featured.
+  + Loc card theo data-category, animate fadeInUp.
+- Card overlay actions (home.js):
+  + Wishlist/Quick view/Compare -> thong bao nho (notification) + animation CSS chen dong vao <style> luc chay.
+- IntersectionObserver (home.js):
+  + Reveal section/khi phan tu (card, stat-card, feature-card...) khi vao viewport, co rootMargin/threshold toi uu.
+
+Ghi chu code (chu thich logic chinh):
+- handleLandingScroll(): quan ly trang thai landing + navbar + hero section.
+- highlightCurrentPageNav(): danh dau link nav tuong ung ten file.
+- enhanceLandingFilters(): tao UI select tuy chinh cho 3 bo loc; closeAllFilterPanels() de dong panel khac.
+- performSearch(): lay input + bo loc -> cuon den #featured.
+- IntersectionObservers: sectionObserver va elementObserver tao hieu ung reveal.
+
+============================================
+TRANG SELL (pages/sell)
+============================================
+
+Files:
+- sell.html: Form tao listing xe + Preview phai, Progress steps, Tooltips, Overlays (loading/success), Modal Help, Tabs Desktop/Mobile.
+- sell-css/sell.css + cac file modular trong pages/sell/css/: sell-form-card.css, sell-preview-card.css, sell-form-inputs.css, sell-progress.css (khoi, preview, input, tien do).
+- sell-js/sell.js: File logic lon (quy trinh hoan chinh tu nhap lieu -> preview -> tinh toan -> luu nhap -> submit mo phong).
+
+Cong nghe JS/CSS/Bootstrap theo chuc nang:
+- Progress Steps + Progress Bars (Bootstrap + sell.js):
+  + updateProgressSteps(step): cap nhat active/completed + thanh overallProgress.
+  + formProgress & formProgressTop: % hoan thanh; doi mau theo nguong 33/66.
+- Tien ich thong bao (toast) (sell.js):
+  + showToast(type,title,msg,dur) chen DOM .toast-container, auto-hide + progress.
+- Khoi tao danh sach nam (sell.js):
+  + populateYearDropdown(): tu currentYear den 1990.
+- Preview thoi gian thuc (sell.js):
+  + Lang nghe input/change tren cac truong -> cap nhat previewTitle/Price/Year/... va counter (title/desc).
+- Upload anh + keo tha + sap xep (sell.js):
+  + handleImageFiles(files): kiem file, size <5MB, FileReader, push vao uploadedImages.
+  + renderImagePreviews(): tao thumb, nut xoa, drag&drop reorder; cap nhat main preview.
+- Validate (sell.js):
+  + validatePhone(^(0|\+84)...), validateEmail(); them .invalid-feedback khi sai.
+- Tinh % hoan thanh (sell.js):
+  + updateFormProgress(): dem truong bat buoc + so anh, tinh % -> cap nhat mau/thanh.
+- Goi y gia (sell.js):
+  + updatePriceSuggestion(): basePrice theo brand (luxury/premium/economy), khau hao theo tuoi xe, he so mileage, condition multiplier => range min/max.
+- So sanh gia (sell.js):
+  + checkPriceComparison(): hien badge Above/Below/Fair trong priceComparison theo range.
+- Thong ke quan tam (sell.js):
+  + updateStatistics(): uoc tinh views/interest dua vao year/images/price, animateCounter().
+- Goi y mo ta AI (mo phong) (sell.js):
+  + aiSuggestionBtn click -> hien spinner 1.5s -> chen noi dung template.
+- Mobile preview dong bo (sell.js):
+  + updateMobilePreview(): clone noi dung preview Desktop sang tab Mobile khi doi tab.
+- Luu nhap (draft) (sell.js):
+  + saveDraftBtn: luu/nap localStorage('carListingDraft'), chuyen trang thai nut Save/Load.
+- Clear form co xac nhan (sell.js):
+  + clearFormBtn: lan 1 hien thong bao/doi label; lan 2 xac nhan -> resetForm().
+- Submit mo phong (sell.js):
+  + Kiem tra phone/email/images -> overlay loading (2s) -> success overlay + confetti -> reset.
+- Tooltip & Scroll progress (sell.js):
+  + initializeTooltips(): tooltip noi dung data-tooltip; initializeScrollProgress(): thanh tien do cuon tren dinh trang.
+- Hieu ung UI: focus scale, shake/bounce CSS chen qua <style>, hien navbar som tren trang sell.
+
+Ghi chu code (chu thich logic chinh theo block):
+- "Image Upload and Preview": quan ly uploadedImages, drag&drop reorder, cap nhat preview.
+- "Form Validation": regex VN phone + email, them/bo .invalid-feedback dong.
+- "Price Suggestion System": basePrice -> khau hao -> mileage -> condition -> range.
+- "AI Description Suggestion": mo phong generate noi dung theo brand/model/year/condition.
+- "Save Draft Functionality": localStorage luu/nap; UI feedback doi icon/mau nut.
+- "Reset Form Function": dua UI ve mac dinh, xoa anh, counters, stats, progress.
+
+============================================
+TRANG CONTACT (pages/contact)
+============================================
+
+Files:
+- contact.html: Navbar chung, thong tin lien he, statistic card, live chat (mo phong), form lien he, FAQ, message history, replies feed.
+- contact-css/: contact-header.css, contact-info-cards.css, contact-stats.css + contact-css/contact.css tong hop.
+- contact-js/contact.js: Tat ca logic lien he hop nhat.
+
+Cong nghe JS/CSS/Bootstrap theo chuc nang:
+- Navbar hien ngay + dong collapse tren mobile (Bootstrap Collapse).
+- Toast thong bao (showToast) + container dong bo voi cac trang khac.
+- Custom Select (ban copy noi bo Contact): enhanceSelects() + enableWheelLock() + khoa body khi mo panel.
+- Form lien he (localStorage):
+  + Luu thong diep vao localStorage('contacts'), render ra bang, bo loc tim kiem, dem so luong.
+  + showMessageModal(): mo modal chi tiet (DOM thu cong khong dung Bootstrap Modal).
+  + Validation email/phone + char-counter 1000 ky tu.
+- Message actions: view/mark-read/delete; cap nhat badge trang thai.
+- Replies feed: sap xep newest/oldest, render tu du lieu (neu co field reply).
+- Hieu ung UI: particles nen, counter easing, form progress bar tren dau form, confetti, keyboard shortcut (Ctrl+Enter gui).
+- Tinh trang gio lam viec: updateWorkingStatus() -> dot + chu trang thai.
+
+Ghi chu code (chu thich logic chinh):
+- getMessages()/setMessages()/saveMessage()/updateMessage(): thao tac localStorage.
+- renderMessages(): ve bang (toi da 20 dong) + badge trang thai.
+- showMessageModal(): tao modal tuy chinh (HTML + style inline), nut dong/ngoai panel.
+- enableWheelLock(): tranh cuon trang khi di trong panel lua chon.
+- initStatsDashboard()/initFormProgress()/updateNotificationBadge(): cac he thong UI bo tro.
+
+============================================
+TRANG AUTH (pages/auth)
+============================================
+
+Files:
+- login.html, register.html, forgot.html + auth-css/auth.css + auth-js/auth.js (gop logic ca 3 trang + tien ich auth).
+
+Thu vien/Bootstrap:
+- Bootstrap 5 CSS/JS, Bootstrap Icons, Font Awesome.
+- Navbar don gian (hien ngay) + UI card trung nhau.
+
+Logic va cong nghe JS:
+- auth.js (Quan ly User qua localStorage):
+  + getUsers()/saveUsers(): doc/ghi danh sach users.
+  + getCurrentUser()/setCurrentUser()/logout()/isLoggedIn().
+  + registerUser(fullname,email,password): kiem tra ton tai, validate co ban, luu user (Password chua hash -> chi demo).
+  + validateLogin(email,password) + loginUser(email,password): check user, tao session currentUser.
+  + getUserProfile(userId)/updateUserProfile(userId, updates).
+- Trang Login:
+  + Toggle password eye, rememberMe luu email, show overlay Loading -> Success -> redirect ../index/index.html.
+  + showAlert()/showToast(), shakeCard() khi loi.
+- Trang Register:
+  + Validate day du (rong, email dung dinh dang, match password, do dai >=6), password strength (yeu/vua/manh), overlay Loading -> Success -> chuyen sang login.
+- Trang Forgot:
+  + Validate email, overlay Loading -> Success + thong bao da gui email (mo phong).
+- Hieu ung UI: page-bg parallax, card revealed/shake, animation nhe, toast thong bao.
+
+Ghi chu code (chu thich logic chinh):
+- Khu vuc "Authentication Functions": chua ham chot validate + luu session.
+- Login form submit: goi loginUser(), overlay, dieu huong; nho email neu check "Remember me".
+- Register submit: goi registerUser(); hien overlay + redirect; show loi cu the neu email da ton tai.
+- Forgot submit: mo phong gui, reset form + overlay success.
+
+============================================
+BOOTSTRAP/ICONS/ASSETS
+============================================
+- assets/bootstrap/css/bootstrap.min.css, js/bootstrap.bundle.min.js: Grid, Navbar/Cards/Buttons/Badges/Progress/Accordion/Modal (mot so modal tu code thu cong).
+- assets/bootstrap/font/bootstrap-icons.css: Icon giao dien (bi-*)
+- assets/bootstrap/fontawesome/css/all.min.css: Icon Font Awesome (fa-*)
+- assets/img/*: Hinh landing/feature; assets/logo/*: logo Google/Facebook/Telegram.
+
+============================================
+GHI CHU KIEN TRUC & ME LUU Y
+============================================
+- Custom Select dung "portal" (append panel vao document.body, position:fixed) de tranh cha co stacking context lam panel bi che boi cac block phia duoi.
+- enableWheelLock() chan scroll toan trang khi cuon trong panel/tables -> UI on dinh.
+- Z-index: panel ~10000, wrapper khi mo ~9999; cac the khac giam z-index de tranh de len.
+- LocalStorage duoc dung cho: auth users, contact messages, sell draft. Khong co backend.
+- Reuse: Toast/Notification duoc tao tuong tu tren nhieu trang, nhung khong dung 1 thu vien chung -> co the hop nhat sau.
+
+============================================
+DE XUAT NANG CAP NHO (NEXT STEPS)
+============================================
+- Hop nhat he thong Toast (1 file chung) va dung lai cho tat ca trang.
+- Dua anh media lon vao Git LFS; xoa lich su file lon neu can.
+- I18n: Bo sung goi da ngon ngu (VN/EN) qua data-i18n + JSON.
+- Tich hop build (Vite hoac tuong tu) de minify/concat CSS/JS va quan ly module tot hon.
+- Tach select-enhance o Contact de dung chung file assets/js/select-enhance.js (dam bao code khong trung lap).

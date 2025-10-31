@@ -1,0 +1,12 @@
+flowchart TD
+  A[User nhập họ tên/email/password/confirm] --> B[Submit]
+  B --> C[Validate rỗng/định dạng/khớp]
+  C --> D{Hợp lệ?}
+  D -- No --> E[Hiện lỗi theo trường + Toast]
+  D -- Yes --> F[registerUser]
+  F --> G{Email đã tồn tại?}
+  G -- Yes --> H[Toast lỗi + focus email]
+  G -- No --> I[Lưu user vào localStorage]
+  I --> J[Overlay Loading]
+  J --> K[Overlay Success]
+  K --> L[Điều hướng sang Login]

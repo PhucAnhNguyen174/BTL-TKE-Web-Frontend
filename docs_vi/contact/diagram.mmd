@@ -1,0 +1,12 @@
+flowchart LR
+  A[DOMContentLoaded] --> B[Tải messages từ localStorage]
+  B --> C[renderMessages vào bảng]
+  C --> D[Tìm kiếm/Lọc]
+  E[Submit Form] --> F[Validate]
+  F --> G{Hợp lệ?}
+  G -- No --> H[Hiện lỗi/Toast]
+  G -- Yes --> I[Lưu vào localStorage]
+  I --> C
+  C --> J[Click hàng -> showMessageModal]
+  J --> K[Mark-read/Delete]
+  K --> L[Cập nhật localStorage + render lại]

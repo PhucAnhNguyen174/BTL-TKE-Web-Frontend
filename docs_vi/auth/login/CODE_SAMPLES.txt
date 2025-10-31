@@ -1,0 +1,191 @@
+Auth/Login - Code & Bootstrap chi tiết
+=====================================
+
+JS chính và vai trò
+-------------------
+- pages/auth/auth-js/auth.js (dùng chung cho login/register/forgot)
+  - getUsers()/saveUsers(), getCurrentUser()/setCurrentUser()/logout()
+  - validateLogin(email, password), loginUser(email, password)
+
+Bootstrap sử dụng
+-----------------
+- Forms: .form-control, .form-check, .input-group
+- Buttons: .btn, .btn-primary
+- Cards: .card, .card-body
+- Utilities: .text-*, .mt-*, .shadow, .rounded
+
+Trích đoạn mã tiêu biểu (đầy đủ với giải thích chi tiết)
+------------------------------------------------------
+1) Xác thực đăng nhập - Validation & Authentication
+/**
+ * Chức năng: Kiểm tra thông tin đăng nhập hợp lệ
+ * Tác dụng: Validate email format và password không rỗng
+ * Trả về: { ok: boolean, msg: string }
+ */
+function validateLogin(email, password) {
+  // Kiểm tra rỗng
+  if (!email || !password) {
+    return { ok: false, msg: 'Vui lòng điền đầy đủ email và mật khẩu' };
+  }
+  
+  // Kiểm tra email format
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, msg: 'Email không đúng định dạng' };
+  }
+  
+  return { ok: true };
+}
+
+/**
+ * Chức năng: Xác thực người dùng và tạo session
+ * Tác dụng: So sánh email/password với danh sách users trong localStorage
+ * Lưu ý: Demo only - password lưu plaintext, thực tế cần hash (bcrypt)
+ * Trả về: { ok: boolean, msg: string, user?: object }
+ */
+function loginUser(email, password) {
+  // Lấy danh sách users từ localStorage
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  
+  // Tìm user khớp email và password
+  const user = users.find(u => u.email === email && u.password === password);
+  
+  if (!user) {
+    return { ok: false, msg: 'Email hoặc mật khẩu không đúng' };
+  }
+  
+  // Tạo session: lưu thông tin user hiện tại
+  const currentUser = { 
+    id: user.id || user.email, 
+    email: user.email,
+    fullname: user.fullname || 'User'
+  };
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  
+  return { ok: true, user: currentUser };
+}
+
+2) Luồng submit form (chi tiết)
+/**
+ * Chức năng: Xử lý submit form đăng nhập
+ * Tác dụng: Validate -> Authenticate -> Hiển thị overlay -> Redirect
+ * Bootstrap: .form-control, .btn-primary, .is-invalid cho lỗi
+ */
+const form = document.querySelector('#loginForm');
+
+form?.addEventListener('submit', (e) => {
+  e.preventDefault(); // Ngăn reload trang
+  
+  // Bước 1: Thu thập dữ liệu
+  const email = $('#email').value.trim();
+  const password = $('#password').value;
+  const rememberMe = $('#rememberMe')?.checked;
+  
+  // Bước 2: Validate
+  const validation = validateLogin(email, password);
+  if (!validation.ok) {
+    showToast('error', 'Lỗi đăng nhập', validation.msg);
+    shakeCard(); // Hiệu ứng rung thẻ login
+    return;
+  }
+  
+  // Bước 3: Authenticate
+  const result = loginUser(email, password);
+  if (!result.ok) {
+    showToast('error', 'Lỗi đăng nhập', result.msg);
+    shakeCard();
+    $('#password').value = ''; // Clear password
+    $('#password').focus();
+    return;
+  }
+  
+  // Bước 4: Remember me
+  if (rememberMe) {
+    localStorage.setItem('rememberedEmail', email);
+  } else {
+    localStorage.removeItem('rememberedEmail');
+  }
+  
+  // Bước 5: Hiển thị overlay loading (mô phỏng)
+  showOverlay('Đang đăng nhập...');
+  
+  // Bước 6: Sau 900ms -> success -> redirect
+  setTimeout(() => {
+    hideOverlay();
+    showOverlay('Đăng nhập thành công!', 'success');
+    
+    setTimeout(() => {
+      // Chuyển về trang chủ
+      window.location.href = '../home/index.html';
+    }, 600);
+  }, 900);
+});
+
+/**
+ * Hiệu ứng rung khi lỗi
+ */
+function shakeCard() {
+  const card = document.querySelector('.login-card');
+  card?.classList.add('shake');
+  setTimeout(() => card?.classList.remove('shake'), 600);
+}
+
+/**
+ * Hiển thị overlay loading/success
+ */
+function showOverlay(text, type = 'loading') {
+  let overlay = document.querySelector('.auth-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'auth-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75';
+    overlay.style.zIndex = '10200';
+    document.body.appendChild(overlay);
+  }
+  
+  const icon = type === 'success' 
+    ? '<i class="bi bi-check-circle-fill text-success" style="font-size:4rem"></i>'
+    : '<div class="spinner-border text-primary" role="status"></div>';
+  
+  overlay.innerHTML = `
+    <div class="text-center text-white">
+      ${icon}
+      <div class="mt-3 fs-5">${text}</div>
+    </div>`;
+  overlay.classList.add('show');
+}
+
+function hideOverlay() {
+  document.querySelector('.auth-overlay')?.remove();
+}
+
+3) Remember me & Auto-fill
+/**
+ * Chức năng: Tự động điền email nếu đã lưu "Remember me"
+ * Tác dụng: Tiện lợi cho người dùng quay lại
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  const savedEmail = localStorage.getItem('rememberedEmail');
+  if (savedEmail) {
+    $('#email').value = savedEmail;
+    $('#rememberMe').checked = true;
+    $('#password').focus(); // Focus vào password để bắt đầu nhập
+  }
+});
+
+4) Toggle hiển thị password
+/**
+ * Chức năng: Hiện/ẩn mật khẩu khi click icon mắt
+ * Tác dụng: UX tốt hơn, cho phép người dùng kiểm tra lại password
+ * Bootstrap Icons: .bi-eye, .bi-eye-slash
+ */
+$('#togglePassword')?.addEventListener('click', () => {
+  const input = $('#password');
+  const icon = $('#togglePassword i');
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.replace('bi-eye', 'bi-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.replace('bi-eye-slash', 'bi-eye');
+  }
+});

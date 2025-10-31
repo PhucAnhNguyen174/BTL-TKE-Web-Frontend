@@ -1,0 +1,12 @@
+flowchart TD
+  A[Trang load] --> B[navbar.js khởi tạo]
+  B --> C[Xây Section Menu từ các section trên trang]
+  C --> D[Scroll handler: navbar ẩn/hiện]
+  E[Click nút MENU] --> F[Mở panel mục lục]
+  F --> G[Khóa body scroll]
+  G --> H[Click item] --> I[Cuộn mượt đến section]
+  
+  J[Custom Select trigger] --> K[Mở panel (portal, fixed)]
+  K --> L[Tính vị trí + drop-up nếu cần]
+  L --> M[Wheel lock trong panel]
+  M --> N[Chọn option] --> O[Đóng panel + trả focus]
