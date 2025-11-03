@@ -14,7 +14,7 @@
 - B2: Chạy file git-lfs-windows-v3.7.1.exe để setup
 - B3: Sau khi setup xong, mở Command Prompt và chạy lệnh "git lfs --version", nếu thành công thì sẽ in ra version hiện tại
 - B4: Dùng Command Prompt để di chuyển đến thư mục đích nơi clone code và chạy lệnh "git clone https://github.com/PhucAnhNguyen174/BTL-TKE-Web-Frontend"
-- Truy cập vào folder vửa tải, mở folder main và chạy main.html
+- B5: Truy cập vào folder vửa tải, mở folder main và chạy main.html
 
 ## Thành viên
 - Nguyễn Phúc Anh - 242630903
