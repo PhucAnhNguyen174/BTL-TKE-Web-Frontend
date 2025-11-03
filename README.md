@@ -1,5 +1,21 @@
 ### Bài tập thiết kế web Frontend - Nhóm 5
 
+<p style="background-color: #000000ff; 
+          color: #f40b1eff; 
+          padding: 12px; 
+          border-left: 6px solid #dc3545; 
+          border-radius: 5px; 
+          font-weight: bold;">
+⚠️ Chú ý: Repo này chứa các file lớn (>50MB). Tải <b>Git LFS</b> để có thể tải đầy đủ nội dung (Hướng dẫn cách tải, setup và kiểm tra ngay bên dưới). Không thể download trực tiếp từ trên github thông qua "Download ZIP"
+</p>
+
+## Cách tải Git LFS, kiểm tra (Cho Windows)
+- B1: Truy cập "https://git-lfs.com/" và tải Git LFS
+- B2: Chạy file git-lfs-windows-v3.7.1.exe để setup
+- B3: Sau khi setup xong, mở Command Prompt và chạy lệnh "git lfs --version", nếu thành công thì sẽ in ra version hiện tại
+- B4: Dùng Command Prompt để di chuyển đến thư mục đích nơi clone code và chạy lệnh "git clone https://github.com/PhucAnhNguyen174/BTL-TKE-Web-Frontend"
+- Truy cập vào folder vửa tải, mở folder main và chạy main.html
+
 ## Thành viên
 - Nguyễn Phúc Anh - 242630903
 - Lê Đình Long - 242630959

@@ -356,6 +356,7 @@ if (document.getElementById('loginForm')) {
   const rememberMeCheckbox = document.getElementById('rememberMe');
   const loadingOverlay = document.getElementById('loadingOverlay');
   const successOverlay = document.getElementById('successOverlay');
+  const postLoginRedirect = '../../../main/main.html#landingAnimation'; // Landing page after successful auth
 
   // ===================================
   // Toggle Password Visibility
@@ -409,8 +410,8 @@ window.addEventListener('DOMContentLoaded', () => {
     actionContainer.style.gap = '8px';
     actionContainer.style.justifyContent = 'center';
 
-    const continueLink = document.createElement('a');
-    continueLink.href = '../index/index.html';
+  const continueLink = document.createElement('a');
+  continueLink.href = postLoginRedirect;
     continueLink.className = 'btn btn-sm btn-primary';
     continueLink.textContent = 'Continue to site';
 
@@ -530,7 +531,7 @@ loginForm.addEventListener('submit', function(evt){
       
       setTimeout(() => {
         document.body.classList.remove('no-scroll'); // Unlock before redirect
-        window.location.href = '../index/index.html';
+  window.location.href = postLoginRedirect;
       }, 1200);
     }, 800);
   } else {
@@ -1001,7 +1002,7 @@ form.addEventListener('submit', (e) => {
   if (!registerResult.success) {
     // Show detailed error message
     if (registerResult.message.includes('already registered')) {
-      errorMsg.innerHTML = "❌ <strong>Email already registered!</strong><br>This email is already in use. Please <a href='../login/login.html' style='color: #fff; text-decoration: underline;'>login</a> or use a different email.";
+      errorMsg.innerHTML = "❌ <strong>Email already registered!</strong><br>This email is already in use. Please <a href='./login.html' style='color: #fff; text-decoration: underline;'>login</a> or use a different email.";
     } else {
       errorMsg.textContent = "❌ " + registerResult.message;
     }
@@ -1025,8 +1026,8 @@ form.addEventListener('submit', (e) => {
     passwordStrengthEl.classList.remove('visible');
     
     setTimeout(() => {
-      document.body.classList.remove('no-scroll'); // Unlock before redirect
-      window.location.href = "../login/login.html";
+  document.body.classList.remove('no-scroll'); // Unlock before redirect
+  window.location.href = "./login.html";
     }, 1200);
   }, 800);
 });
