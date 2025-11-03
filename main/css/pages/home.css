@@ -1,0 +1,905 @@
+/* ===================================
+   Home Page Styles (Landing, Sections, Page-Specific Elements)
+   =================================== */
+
+html.layout-scale-90 {
+    --layout-scale: 0.9;
+}
+
+section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: clamp(calc(24px * var(--layout-scale, 1)), calc(6vh * var(--layout-scale, 1)), calc(64px * var(--layout-scale, 1)));
+}
+
+/* Shared animated gradient for interactive sections. */
+section.section-transition {
+    background-image: var(--section-surface-gradient, radial-gradient(130% 130% at 20% 20%, #080808 0%, #111111 40%, #191919 70%, #252525 100%));
+    background-size: 220% 220%, 200% 200%, 100% 100%;
+    background-position: 0% 50%, 100% 50%, 50% 50%;
+    background-repeat: no-repeat;
+    animation: liquidGradient var(--section-surface-animation-duration, 18s) ease-in-out infinite;
+}
+
+/* Strip the old overlay pseudo-element so the animated gradient is visible. */
+section.section-transition::before {
+    content: none;
+}
+
+/* Drift the radial background so each section feels subtly alive. */
+@keyframes liquidGradient {
+    0% {
+        background-position: 0% 50%, 100% 50%, 50% 50%;
+    }
+    50% {
+        background-position: 100% 50%, 0% 50%, 50% 50%;
+    }
+    100% {
+        background-position: 0% 50%, 100% 50%, 50% 50%;
+    }
+}
+
+/* ===================================
+   Landing Animation & Search Overlay
+   =================================== */
+
+.landing-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.landing-animation.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#landingVideo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.logo-overlay {
+    position: absolute;
+    top: calc(50% - (80px * var(--layout-scale, 1)));
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(20px * var(--layout-scale, 1));
+    overflow: visible;
+}
+
+.landing-logo {
+    max-width: calc(800px * var(--layout-scale, 1));
+    width: calc(40vw * var(--layout-scale, 1));
+    height: auto;
+    filter: drop-shadow(0 calc(10px * var(--layout-scale, 1)) calc(30px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.5));
+    margin-left: calc(10px * var(--layout-scale, 1));
+}
+
+.landing-search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: calc(900px * var(--layout-scale, 1));
+    margin-left: calc(10px * var(--layout-scale, 1));
+    transform: translateX(0);
+    position: relative;
+    gap: 0;
+}
+
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: transparent;
+    border: calc(2px * var(--layout-scale, 1)) solid white;
+    border-radius: calc(50px * var(--layout-scale, 1));
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.search-bar-wrapper:hover {
+    box-shadow: 0 calc(8px * var(--layout-scale, 1)) calc(25px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.3);
+}
+
+.landing-search-input {
+    flex: 1;
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: calc(15px * var(--layout-scale, 1)) calc(25px * var(--layout-scale, 1));
+    font-size: 1.1rem;
+    outline: none;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
+.landing-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    line-height: 1.5;
+    font-size: 1.2rem;
+}
+
+.landing-search-input:focus {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 calc(20px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.3), inset 0 0 calc(15px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.1);
+}
+
+/* Glow the entire search shell when the input is active to draw focus. */
+.search-bar-wrapper:has(.landing-search-input:focus) {
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 calc(30px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.5), 0 calc(8px * var(--layout-scale, 1)) calc(25px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.3);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: borderPulse 2s ease-in-out infinite;
+}
+
+.search-bar-wrapper:has(.landing-search-input:focus) .landing-filter-toggle {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-right-color: rgba(255, 255, 255, 0.5);
+}
+
+.search-bar-wrapper:has(.landing-search-input:focus) .landing-search-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes borderPulse {
+    0%, 100% {
+        border-color: rgba(255, 255, 255, 1);
+    }
+    50% {
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.landing-filter-toggle {
+    background-color: transparent;
+    border: none;
+    border-right: calc(2px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: calc(15px * var(--layout-scale, 1)) calc(25px * var(--layout-scale, 1));
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    position: relative;
+    border-radius: calc(50px * var(--layout-scale, 1)) 0 0 calc(50px * var(--layout-scale, 1));
+    overflow: hidden;
+}
+
+.landing-filter-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: calc(50px * var(--layout-scale, 1)) 0 0 calc(50px * var(--layout-scale, 1));
+}
+
+.landing-filter-toggle.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: calc(50px * var(--layout-scale, 1)) 0 0 calc(50px * var(--layout-scale, 1));
+}
+
+.landing-filter-toggle i {
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.landing-filter-toggle.active i {
+    transform: rotate(180deg);
+}
+
+.landing-filter-toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Expand a temporary halo when the filter toggle fires. */
+.landing-filter-toggle.ripple::after {
+    animation: buttonRipple 0.8s ease-out;
+}
+
+.landing-search-btn {
+    background-color: transparent;
+    border: none;
+    border-left: calc(2px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: calc(15px * var(--layout-scale, 1)) calc(25px * var(--layout-scale, 1));
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    border-radius: 0 calc(50px * var(--layout-scale, 1)) calc(50px * var(--layout-scale, 1)) 0;
+}
+
+.landing-search-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 0 calc(50px * var(--layout-scale, 1)) calc(50px * var(--layout-scale, 1)) 0;
+}
+
+/* Custom dropdown choreography replaces default collapses for smoother motion. */
+.filter-group {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 16px * var(--layout-scale, 1));
+    transform: translate(-50%, calc(-10px * var(--layout-scale, 1)));
+    width: 100%;
+    gap: calc(15px * var(--layout-scale, 1));
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    overflow: visible;
+    transition: none;
+    z-index: 5;
+}
+
+.filter-group.show {
+    display: flex;
+    animation: filterDropdownIn 0.45s ease forwards;
+    pointer-events: auto;
+}
+
+.filter-group.hide {
+    animation: filterDropdownOut 0.4s ease forwards;
+}
+
+/* Smooth slide when filters open under the search bar. */
+@keyframes filterDropdownIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, calc(-10px * var(--layout-scale, 1)));
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Reverse the animation so the panel feels anchored to the bar. */
+@keyframes filterDropdownOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, calc(-10px * var(--layout-scale, 1)));
+    }
+}
+
+.landing-advanced-filter-btn {
+    flex: 1;
+    min-width: calc(150px * var(--layout-scale, 1));
+    background-color: transparent;
+    border: calc(2px * var(--layout-scale, 1)) solid white;
+    border-radius: calc(30px * var(--layout-scale, 1));
+    color: white;
+    padding: calc(12px * var(--layout-scale, 1)) calc(20px * var(--layout-scale, 1));
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(8px * var(--layout-scale, 1));
+}
+
+.landing-advanced-filter-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    box-shadow: 0 calc(4px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.2);
+    transform: translateY(0);
+    color: white;
+}
+
+.landing-animation .scroll-down {
+    position: absolute;
+    bottom: calc(30px * var(--layout-scale, 1));
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 2.5rem;
+    animation: bounce 2s infinite;
+    text-decoration: none;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.landing-animation .scroll-down:hover {
+    color: white;
+    transform: translateX(-50%) scale(1.1);
+}
+
+/* Keyframe used by the pseudo-element ripple animation. */
+@keyframes buttonRipple {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+    }
+    100% {
+        width: calc(200px * var(--layout-scale, 1));
+        height: calc(200px * var(--layout-scale, 1));
+        opacity: 0;
+    }
+}
+
+/* ===================================
+   Hero (Why Choose Us) Section
+   =================================== */
+
+.hero-section {
+    min-height: 100vh;
+    position: relative;
+    padding-top: calc(80px * var(--layout-scale, 1));
+}
+
+.hero-section h1 {
+    animation: fadeInUp 0.8s ease;
+}
+
+.hero-section p {
+    animation: fadeInUp 1s ease;
+}
+
+.hero-section .btn {
+    animation: fadeInUp 1.2s ease;
+}
+
+.scroll-down {
+    position: absolute;
+    bottom: calc(30px * var(--layout-scale, 1));
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+    text-decoration: none;
+}
+
+.scroll-down:hover {
+    color: white;
+}
+
+/* ===================================
+   Section Blocks (Featured, Stats, Partners, etc.)
+   =================================== */
+
+.featured-section {
+    padding: clamp(calc(188px * var(--layout-scale, 1)), calc(25vh * var(--layout-scale, 1)), calc(268px * var(--layout-scale, 1)))
+             clamp(calc(16px * var(--layout-scale, 1)), calc(4vw * var(--layout-scale, 1)), calc(48px * var(--layout-scale, 1)))
+             calc(80px * var(--layout-scale, 1));
+    scroll-margin-top: clamp(calc(168px * var(--layout-scale, 1)), calc(22vh * var(--layout-scale, 1)), calc(248px * var(--layout-scale, 1)));
+}
+
+.featured-section > .container {
+    padding-top: clamp(calc(140px * var(--layout-scale, 1)), calc(20vh * var(--layout-scale, 1)), calc(208px * var(--layout-scale, 1)));
+}
+
+/* Apply high-contrast styling to individual featured cards for visual punch. */
+.featured-section .car-card {
+    background-color: #000000;
+    border: calc(1px * var(--layout-scale, 1)) solid #ffffff;
+    color: #ffffff;
+}
+
+.featured-section .car-card .card-title,
+.featured-section .car-card .card-text,
+.featured-section .car-card p {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.featured-section .car-card .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Featured CTA buttons: default fill matches previous hover styling, hover lifts button */
+.featured-section .car-card .btn-outline-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    transform: translateY(0);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featured-section .car-card .btn-outline-primary:hover,
+.featured-section .car-card .btn-outline-primary:focus-visible {
+    color: #ffffff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(calc(-2px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(4px * var(--layout-scale, 1)) calc(12px * var(--layout-scale, 1)) rgba(13, 110, 253, 0.35);
+}
+
+.statistics-section,
+.partners-section,
+.testimonials-section,
+.blog-section,
+.faq-section,
+.newsletter-section,
+.app-section,
+.contact-section,
+.buy-cars-section,
+.sell-cars-section {
+    padding: calc(80px * var(--layout-scale, 1)) 0;
+}
+
+.partners-section .col-12,
+.featured-section .col-md-6,
+.testimonials-section .col-md-6,
+.blog-section .col-md-4 {
+    display: flex;
+}
+
+.partners-section .col-12 > *,
+.featured-section .col-md-6 > *,
+.testimonials-section .col-md-6 > *,
+.blog-section .col-md-4 > * {
+    width: 100%;
+}
+
+.partner-link,
+.blog-card a {
+    color: #0d6efd;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.partner-link:hover,
+.partner-link:focus-visible,
+.blog-card a:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.faq-section .accordion-item {
+    background-color: rgba(0, 0, 0, 0.6);
+    border: calc(1px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.08);
+    margin-bottom: calc(12px * var(--layout-scale, 1));
+    border-radius: calc(12px * var(--layout-scale, 1));
+    overflow: hidden;
+}
+
+.faq-section .accordion-button {
+    background: transparent;
+    color: #fff;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.faq-section .accordion-button:focus {
+    box-shadow: none;
+}
+
+.faq-section .accordion-button:not(.collapsed) {
+    color: #fff;
+    background-color: rgba(13, 110, 253, 0.2);
+}
+
+.faq-section .accordion-body {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.faq-section .accordion-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(13, 110, 253, 0.35);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+}
+
+.faq-section .accordion-button:focus-visible {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.35);
+}
+
+.faq-section .accordion-button.ripple-active::after {
+    animation: faqRipple 0.6s ease-out;
+}
+
+@keyframes faqRipple {
+    0% {
+        opacity: 0.45;
+        transform: translate(-50%, -50%) scale(0.15);
+    }
+    70% {
+        opacity: 0.15;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.6);
+    }
+}
+
+.faq-answer {
+    opacity: 0;
+    transform: translateY(calc(12px * var(--layout-scale, 1)));
+}
+
+.faq-answer.faq-answer-visible {
+    animation: faqAnswerFade 0.4s ease forwards;
+}
+
+@keyframes faqAnswerFade {
+    from {
+        opacity: 0;
+        transform: translateY(calc(12px * var(--layout-scale, 1)));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.newsletter-content {
+    max-width: calc(720px * var(--layout-scale, 1));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(20px * var(--layout-scale, 1));
+}
+
+.newsletter-content > a {
+    margin-top: calc(10px * var(--layout-scale, 1));
+}
+
+.app-phone {
+    display: flex;
+    justify-content: center;
+}
+
+.contact-icon {
+    width: calc(50px * var(--layout-scale, 1));
+    height: calc(50px * var(--layout-scale, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.contact-item {
+    transition: transform 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateX(calc(10px * var(--layout-scale, 1)));
+}
+
+.buy-cars-section .feature-card,
+.sell-cars-section .selling-step,
+.sell-cars-section .selling-benefits-card,
+.sell-cars-section .benefit-item,
+.buy-cars-section .feature-card .feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(calc(-5px * var(--layout-scale, 1)));
+}
+
+.feature-icon {
+    width: calc(80px * var(--layout-scale, 1));
+    height: calc(80px * var(--layout-scale, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.feature-card:hover .feature-icon {
+    transform: rotate(360deg);
+}
+
+.selling-step:hover {
+    transform: translateX(calc(10px * var(--layout-scale, 1)));
+}
+
+.selling-benefits-card {
+    background-color: #050505;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}
+
+.selling-benefits-card:hover {
+    transform: translateY(-5px);
+}
+
+.selling-benefits-card h4,
+.selling-benefits-card h6,
+.selling-benefits-card p {
+    color: #ffffff !important;
+}
+
+.selling-benefits-card .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.benefit-item:hover {
+    transform: translateX(calc(5px * var(--layout-scale, 1)));
+}
+
+.step-number {
+    width: calc(50px * var(--layout-scale, 1));
+    height: calc(50px * var(--layout-scale, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+/* ===================================
+   Responsive Tweaks
+   =================================== */
+
+@media (max-width: 991.98px) {
+    .landing-logo {
+        max-width: calc(600px * var(--layout-scale, 1));
+        width: 50vw;
+    }
+
+    .logo-overlay {
+        top: calc(50% - (80px * var(--layout-scale, 1)));
+        gap: calc(18px * var(--layout-scale, 1));
+    }
+
+    .landing-search-container {
+        max-width: calc(700px * var(--layout-scale, 1));
+    }
+
+    .landing-search-input {
+        padding: calc(12px * var(--layout-scale, 1)) calc(20px * var(--layout-scale, 1));
+        font-size: 1rem;
+    }
+
+    .landing-search-input::placeholder {
+        font-size: 1.1rem;
+    }
+
+    .landing-search-btn,
+    .landing-filter-toggle {
+        padding: calc(12px * var(--layout-scale, 1)) calc(20px * var(--layout-scale, 1));
+        font-size: 1.1rem;
+    }
+
+    .filter-select-trigger {
+        padding: calc(10px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1));
+        font-size: 0.95rem;
+    }
+
+    .landing-advanced-filter-btn {
+        font-size: 0.9rem;
+        padding: calc(10px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1));
+    }
+
+    .hero-section {
+        padding-top: calc(100px * var(--layout-scale, 1));
+        text-align: center;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .navbar-nav .btn-primary {
+        margin-top: 1rem;
+    }
+
+    .featured-section {
+        padding-top: clamp(calc(168px * var(--layout-scale, 1)), calc(32vh * var(--layout-scale, 1)), calc(248px * var(--layout-scale, 1)));
+    }
+
+    .featured-section > .container {
+        padding-top: clamp(calc(120px * var(--layout-scale, 1)), calc(24vh * var(--layout-scale, 1)), calc(188px * var(--layout-scale, 1)));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .landing-logo {
+        max-width: calc(500px * var(--layout-scale, 1));
+        width: 60vw;
+    }
+
+    .logo-overlay {
+        top: calc(50% - (80px * var(--layout-scale, 1)));
+        gap: calc(15px * var(--layout-scale, 1));
+    }
+
+    .landing-search-container {
+        max-width: 90%;
+    }
+
+    .landing-search-input {
+        padding: calc(10px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1));
+        font-size: 0.9rem;
+    }
+
+    .landing-search-input::placeholder {
+        font-size: 1rem;
+    }
+
+    .landing-search-btn,
+    .landing-filter-toggle {
+        padding: calc(10px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1));
+        font-size: 1rem;
+    }
+
+    .filter-group {
+        gap: calc(10px * var(--layout-scale, 1));
+        top: calc(100% + 12px * var(--layout-scale, 1));
+    }
+
+    .filter-select-wrapper {
+        min-width: 0;
+    }
+
+    .filter-select-trigger {
+        font-size: 0.9rem;
+        padding: calc(8px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1));
+    }
+
+    .landing-advanced-filter-btn {
+        font-size: 0.85rem;
+        padding: calc(8px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1));
+        min-width: calc(120px * var(--layout-scale, 1));
+    }
+
+    .overlay-trigger {
+        padding: calc(8px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1));
+        top: calc(15px * var(--layout-scale, 1));
+        left: calc(15px * var(--layout-scale, 1));
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .step-icon {
+        width: calc(60px * var(--layout-scale, 1));
+        height: calc(60px * var(--layout-scale, 1));
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .landing-logo {
+        max-width: calc(400px * var(--layout-scale, 1));
+        width: 70vw;
+    }
+
+    .logo-overlay {
+        gap: calc(15px * var(--layout-scale, 1));
+        left: 50%;
+    }
+
+    .landing-search-container {
+        max-width: 95%;
+        gap: calc(15px * var(--layout-scale, 1));
+        margin-left: 0;
+    }
+
+    .landing-search-input {
+        padding: calc(8px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1));
+        font-size: 0.85rem;
+    }
+
+    .landing-search-input::placeholder {
+        font-size: 0.95rem;
+    }
+
+    .landing-search-btn,
+    .landing-filter-toggle {
+        padding: calc(8px * var(--layout-scale, 1)) calc(15px * var(--layout-scale, 1));
+        font-size: 1rem;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        gap: calc(8px * var(--layout-scale, 1));
+    }
+
+    .filter-select-wrapper,
+    .filter-select-trigger,
+    .landing-advanced-filter-btn {
+        width: 100%;
+    }
+
+    .overlay-trigger {
+        padding: calc(6px * var(--layout-scale, 1)) calc(12px * var(--layout-scale, 1));
+        top: calc(10px * var(--layout-scale, 1));
+        left: calc(10px * var(--layout-scale, 1));
+    }
+
+    .overlay-trigger i {
+        font-size: 1.2rem;
+    }
+
+    .newsletter-content {
+        gap: calc(16px * var(--layout-scale, 1));
+    }
+
+    .newsletter-form {
+        max-width: 100%;
+    }
+
+    .featured-section {
+        padding: clamp(calc(152px * var(--layout-scale, 1)), calc(34vh * var(--layout-scale, 1)), calc(232px * var(--layout-scale, 1)))
+                 clamp(calc(12px * var(--layout-scale, 1)), calc(6vw * var(--layout-scale, 1)), calc(24px * var(--layout-scale, 1)))
+                 calc(64px * var(--layout-scale, 1));
+        scroll-margin-top: clamp(calc(148px * var(--layout-scale, 1)), calc(30vh * var(--layout-scale, 1)), calc(228px * var(--layout-scale, 1)));
+    }
+
+    .featured-section > .container {
+        padding-top: clamp(calc(108px * var(--layout-scale, 1)), calc(28vh * var(--layout-scale, 1)), calc(164px * var(--layout-scale, 1)));
+    }
+
+    .hero-section {
+        min-height: 80vh;
+    }
+
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+}

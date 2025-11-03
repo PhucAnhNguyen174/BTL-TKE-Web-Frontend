@@ -1,0 +1,51 @@
+/* ===================================
+   Form Components (Newsletter, Contact, Inputs)
+   =================================== */
+
+.newsletter-form {
+    width: 100%;
+    max-width: calc(520px * var(--layout-scale, 1));
+}
+
+.newsletter-form .input-group {
+    width: 100%;
+}
+
+.newsletter-form .form-control {
+    border-radius: calc(50px * var(--layout-scale, 1)) 0 0 calc(50px * var(--layout-scale, 1));
+    border: none;
+    padding-left: calc(25px * var(--layout-scale, 1));
+}
+
+.newsletter-form .btn {
+    border-radius: 0 calc(50px * var(--layout-scale, 1)) calc(50px * var(--layout-scale, 1)) 0;
+    padding: 0 calc(30px * var(--layout-scale, 1));
+}
+
+.contact-form-card {
+    background-color: #050505;
+    border: calc(1px * var(--layout-scale, 1)) solid #ffffff !important;
+    color: #ffffff;
+}
+
+.contact-form-card .form-label {
+    color: #ffffff;
+}
+
+.contact-form-card .form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: calc(1px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
+    box-shadow: 0 0 0 calc(0.2rem * var(--layout-scale, 1)) rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.contact-form-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}

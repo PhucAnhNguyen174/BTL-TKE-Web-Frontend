@@ -1,0 +1,22 @@
+/* ========================================================
+    Featured Badge Treatments
+    --------------------------------------------------------
+    High-impact badge styles for limited allotment, collector,
+    and new arrival status indicators.
+    ======================================================== */
+.card .badge {
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.4rem 0.9rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card .badge.bg-danger,
+.card .badge.bg-warning,
+.card .badge.bg-info,
+.card .badge.bg-primary,
+.card .badge.bg-success,
+.card .badge.bg-secondary {
+    backdrop-filter: blur(8px);
+}

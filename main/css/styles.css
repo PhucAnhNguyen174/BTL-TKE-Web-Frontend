@@ -1,0 +1,21 @@
+/* ========================================================
+	LuxAuto Stylesheet Manifest
+	--------------------------------------------------------
+	Central import list that ensures tokens, layout shells,
+	and component partials load in the expected order.
+	======================================================== */
+@import url('base/variables.css');
+@import url('base/globals.css');
+@import url('base/utilities.css');
+@import url('../../shared/css/layout/navbar.css');
+@import url('../../shared/css/components/section-menu.css');
+@import url('layout/footer.css');
+@import url('components/buttons.css');
+@import url('components/cards.css');
+@import url('components/forms.css');
+@import url('components/badges.css');
+@import url('components/back-to-top.css');
+@import url('components/overlays.css');
+@import url('components/media.css');
+@import url('pages/home.css');
+

@@ -1,0 +1,20 @@
+/* ========================================================
+    Featured Page Navbar Overrides
+    --------------------------------------------------------
+    Overrides the shared navbar skin so the featured catalog
+    inherits the darker glassmorphism treatment.
+    ======================================================== */
+.navbar.navbar-dark {
+    background-color: rgba(18, 18, 18, 0.96);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
+}
+
+.navbar .landing-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+

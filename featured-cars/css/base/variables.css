@@ -1,0 +1,13 @@
+/* ========================================================
+    Featured Page Design Tokens
+    --------------------------------------------------------
+    Dedicated CSS custom properties that scope shadows and
+    overlays to the Featured Cars page without bleeding into
+    the shared site theme.
+    ======================================================== */
+:root {
+    --featured-filter-shadow: 0 10px 25px rgba(13, 110, 253, 0.30);
+    --featured-filter-shadow-hover: 0 20px 36px rgba(13, 110, 253, 0.45);
+    --featured-section-overlay: linear-gradient(135deg, rgba(18, 18, 18, 0.92), rgba(34, 34, 34, 0.88));
+    --featured-card-accent: rgba(13, 110, 253, 0.08);
+}

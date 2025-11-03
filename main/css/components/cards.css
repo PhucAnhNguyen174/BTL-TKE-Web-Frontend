@@ -1,0 +1,171 @@
+/* ===================================
+   Card Components (Shared Styling)
+   =================================== */
+
+.car-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    border-radius: calc(10px * var(--layout-scale, 1));
+}
+
+.car-card:hover {
+    transform: translateY(calc(-10px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(10px * var(--layout-scale, 1)) calc(30px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.15);
+}
+
+.car-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.car-card .card-body .d-flex.justify-content-between.align-items-center {
+    margin-top: auto;
+}
+
+.stat-card {
+    padding: calc(30px * var(--layout-scale, 1)) calc(20px * var(--layout-scale, 1));
+    border-radius: calc(20px * var(--layout-scale, 1));
+    background: rgba(255, 255, 255, 0.03);
+    border: calc(1px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: calc(170px * var(--layout-scale, 1));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: calc(12px * var(--layout-scale, 1));
+}
+
+.stat-card:hover {
+    transform: translateY(calc(-5px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(15px * var(--layout-scale, 1)) calc(35px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.25);
+}
+
+.stat-card p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+}
+
+.partner-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: calc(18px * var(--layout-scale, 1));
+    border: calc(1px * var(--layout-scale, 1)) solid rgba(255, 255, 255, 0.08);
+    padding: calc(30px * var(--layout-scale, 1)) calc(24px * var(--layout-scale, 1));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: calc(18px * var(--layout-scale, 1));
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 100%;
+    text-align: center;
+}
+
+.partner-card:hover {
+    transform: translateY(calc(-6px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(15px * var(--layout-scale, 1)) calc(35px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.25);
+}
+
+.partner-card img {
+    max-height: calc(90px * var(--layout-scale, 1));
+    filter: brightness(1.1);
+    transition: transform 0.3s ease;
+}
+
+.partner-card:hover img {
+    transform: scale(1.05);
+}
+
+.partner-content {
+    display: flex;
+    flex-direction: column;
+    gap: calc(10px * var(--layout-scale, 1));
+    color: #ffffff;
+}
+
+.partner-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.partner-description {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.partner-link {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: color 0.3s ease;
+}
+
+.partner-link:hover,
+.partner-link:focus-visible {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.testimonial-card {
+    transition: transform 0.3s ease;
+    border-radius: calc(10px * var(--layout-scale, 1));
+    background-color: #050505;
+    border: calc(1px * var(--layout-scale, 1)) solid #ffffff;
+    color: #ffffff;
+}
+
+.testimonial-card:hover {
+    transform: translateY(calc(-5px * var(--layout-scale, 1)));
+}
+
+.testimonial-card .card-text,
+.testimonial-card small {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.blog-card {
+    border-radius: calc(16px * var(--layout-scale, 1));
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #050505;
+    border: calc(1px * var(--layout-scale, 1)) solid #ffffff !important;
+    color: #ffffff;
+}
+
+.blog-card:hover {
+    transform: translateY(calc(-8px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(18px * var(--layout-scale, 1)) calc(30px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.25);
+}
+
+.blog-card a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.blog-card a:hover {
+    text-decoration: underline;
+}
+
+.blog-card .card-text {
+    color: rgb(120, 120, 120) !important;
+}
+
+.card-text.text-muted,
+.text-muted.card-text {
+    color: rgb(120, 120, 120) !important;
+}
+
+.avatar {
+    width: calc(50px * var(--layout-scale, 1));
+    height: calc(50px * var(--layout-scale, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}

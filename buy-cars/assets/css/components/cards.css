@@ -1,0 +1,403 @@
+/* ===================================
+   CAR CARDS STYLING
+   =================================== */
+
+/* Car Card Container */
+.car-card {
+    background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-slow);
+    cursor: pointer;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    display: block;
+    color: inherit;
+    
+    /* Fixed card dimensions */
+    width: 244.4px;
+    height: calc(280px + 224.86px);
+    
+    /* Initial animation state */
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Card entrance animation */
+.car-card.animate-in {
+    animation: cardFadeInUp 0.6s ease-out forwards;
+}
+
+.car-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(74, 158, 255, 0.3), var(--shadow-lg);
+    border-color: var(--border-primary);
+    text-decoration: none;
+}
+
+/* Car Image Container */
+.car-card-image {
+    position: relative;
+    background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    
+    /* Fixed dimensions */
+    width: 244.4px;
+    height: 280px;
+    min-width: 244.4px;
+    max-width: 244.4px;
+    box-sizing: border-box;
+}
+
+.car-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: all var(--transition-slow);
+}
+
+.car-card:hover .car-card-image img {
+    transform: scale(1.1);
+}
+
+/* Sold Out Badge */
+.sold-badge {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(80, 80, 80, 0.95);
+    color: var(--text-white);
+    padding: 5px 16px;
+    border-radius: var(--radius-md);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    animation: badgePulse 2s ease-in-out infinite;
+    white-space: nowrap;
+}
+
+/* ===================================
+   CAR CARD BODY
+   =================================== */
+
+.car-card-body {
+    padding: 25px;
+    background: linear-gradient(145deg, 
+        rgba(26, 26, 26, 0.95) 0%, 
+        rgba(13, 13, 13, 0.98) 100%);
+    border-top: 1px solid rgba(74, 158, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-slow);
+    
+    /* Fixed dimensions */
+    width: 244.4px;
+    height: 224.86px;
+    min-width: 244.4px;
+    max-width: 244.4px;
+    min-height: 224.86px;
+    max-height: 224.86px;
+    box-sizing: border-box;
+}
+
+/* Animated gradient overlay */
+.car-card-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(74, 158, 255, 0.1) 50%, 
+        transparent 100%);
+    transition: left 0.6s ease;
+}
+
+.car-card:hover .car-card-body::before {
+    left: 100%;
+}
+
+/* Glass effect overlay */
+.car-card-body::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, 
+        rgba(74, 158, 255, 0.05) 0%, 
+        transparent 100%);
+    pointer-events: none;
+}
+
+/* Brand text */
+.car-brand {
+    position: relative;
+    z-index: 2;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #888888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    transition: all var(--transition-base);
+}
+
+.car-card:hover .car-brand {
+    color: var(--primary-color);
+    letter-spacing: 3px;
+    transform: translateX(3px);
+}
+
+/* Car name - fixed 3 lines */
+.car-name {
+    position: relative;
+    z-index: 2;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    height: 4.62rem;
+    min-height: 4.62rem;
+    max-height: 4.62rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    font-family: 'Poppins', sans-serif;
+    transition: all var(--transition-base);
+    
+    /* Text gradient */
+    background: linear-gradient(135deg, #e0e0e0 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.car-card:hover .car-name {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: translateY(-2px);
+}
+
+/* Price styling */
+.car-price {
+    position: relative;
+    z-index: 2;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-slow);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+/* Responsive price size */
+.car-price {
+    font-size: clamp(0.95rem, 1.1vw, 1.25rem);
+}
+
+/* Dollar icon */
+.car-price::before {
+    content: '$';
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: all var(--transition-base);
+    flex-shrink: 0;
+}
+
+.car-card:hover .car-price::before {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.car-card:hover .car-price {
+    color: var(--primary-hover);
+    text-shadow: 
+        0 0 10px rgba(74, 158, 255, 0.5),
+        0 0 20px rgba(74, 158, 255, 0.3),
+        0 0 30px rgba(74, 158, 255, 0.2);
+    transform: translateX(5px) scale(1.05);
+}
+
+/* Info badges container */
+.car-info-badges {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.info-badge {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-badge.new {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.info-badge.limited {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.info-badge.collector {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+/* ===================================
+   SKELETON LOADING STATES
+   =================================== */
+
+.skeleton-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.car-card-skeleton {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-medium);
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+.skeleton-body {
+    padding: 20px;
+}
+
+.skeleton-brand {
+    width: 40%;
+    height: 14px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.skeleton-name {
+    width: 80%;
+    height: 20px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.skeleton-price {
+    width: 50%;
+    height: 24px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: 4px;
+}
+
+.skeleton-container.hidden {
+    display: none;
+}
+
+/* ===================================
+   RESPONSIVE CARDS
+   =================================== */
+
+@media (max-width: 1400px) {
+    .car-name {
+        font-size: 1rem;
+    }
+    
+    .car-price {
+        font-size: clamp(0.9rem, 1vw, 1.1rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .car-card-body {
+        padding: 20px;
+    }
+    
+    .car-name {
+        font-size: 0.95rem;
+    }
+    
+    .car-price {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        gap: 4px;
+    }
+    
+    .car-price::before {
+        font-size: 0.85rem;
+    }
+    
+    .car-brand {
+        font-size: 0.7rem;
+    }
+    
+    .car-card-image {
+        height: 220px;
+        padding: 1.5rem;
+    }
+}

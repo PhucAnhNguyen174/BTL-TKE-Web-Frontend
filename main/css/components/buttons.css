@@ -1,0 +1,78 @@
+/* ===================================
+   Button Components (Global Variations)
+   =================================== */
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0b5ed7;
+    transform: translateY(calc(-2px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(4px * var(--layout-scale, 1)) calc(12px * var(--layout-scale, 1)) rgba(13, 110, 253, 0.3);
+}
+
+.btn-auth-outline {
+    background-color: transparent;
+    color: #ffffff;
+    border: calc(2px * var(--layout-scale, 1)) solid #ffffff;
+    transition: all 0.3s ease;
+}
+
+.btn-auth-outline:hover,
+.btn-auth-outline:focus {
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 calc(6px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.25);
+}
+
+.btn-auth-solid {
+    background-color: #ffffff;
+    color: #000000;
+    border: calc(2px * var(--layout-scale, 1)) solid #ffffff;
+    transition: all 0.3s ease;
+}
+
+.btn-auth-solid:hover,
+.btn-auth-solid:focus {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 calc(6px * var(--layout-scale, 1)) calc(18px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.35);
+}
+
+.app-store-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(10px * var(--layout-scale, 1));
+    font-weight: 600;
+}
+
+.pill-btn-left {
+    border-top-left-radius: calc(25px * var(--layout-scale, 1));
+    border-bottom-left-radius: calc(25px * var(--layout-scale, 1));
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pill-btn-right {
+    border-top-right-radius: calc(25px * var(--layout-scale, 1));
+    border-bottom-right-radius: calc(25px * var(--layout-scale, 1));
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pill-btn-left:hover,
+.pill-btn-right:hover {
+    transform: scale(1.05);
+    box-shadow: 0 calc(4px * var(--layout-scale, 1)) calc(12px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.25);
+}

@@ -1,0 +1,52 @@
+/* ========================================================
+    Featured Vehicle Card Styling
+    --------------------------------------------------------
+    Card shell, imagery, and specification list treatments
+    tailored for the high-end featured inventory.
+    ======================================================== */
+.car-card {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #ffffff;
+}
+
+.car-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.2);
+}
+
+/* Maintain a consistent frame for every featured vehicle image */
+.card-img-top-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    background-color: #0b0b0b;
+}
+
+/* Ensure every featured card image fills the same frame without distortion */
+.card-img-top-wrapper img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.inventory-specs {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.inventory-specs i {
+    color: var(--primary-color);
+    margin-right: 0.35rem;
+}
+
+.card .text-primary {
+    color: var(--primary-color) !important;
+}

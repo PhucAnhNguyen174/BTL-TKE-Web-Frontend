@@ -1,0 +1,23 @@
+/* ========================================================
+    Featured Page Footer Overrides
+    --------------------------------------------------------
+    Applies bespoke footer colors and hover states that align
+    with the curated showcase positioning of this page.
+    ======================================================== */
+.footer {
+    background: rgba(10, 10, 10, 0.95);
+}
+
+.footer .footer-description {
+    max-width: 32rem;
+}
+
+.footer .footer-social a {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer .footer-social a:focus-visible,
+.footer .footer-social a:hover {
+    transform: translateY(-3px);
+    color: var(--primary-color);
+}

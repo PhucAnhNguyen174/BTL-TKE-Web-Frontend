@@ -1,0 +1,101 @@
+/* ===================================
+   Navbar Layout and Interaction Styling
+   =================================== */
+
+.navbar {
+    padding: 1rem 0;
+    transition: all 0.5s ease;
+    box-shadow: 0 calc(2px * var(--layout-scale, 1)) calc(10px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.1);
+}
+
+.navbar-left-group {
+    gap: clamp(12px, 2vw, 20px);
+}
+
+#mainNav {
+    background-color: rgb(18, 18, 18) !important;
+}
+
+.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+.navbar-visible {
+    transform: translateY(0);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.navbar-brand i {
+    margin-right: calc(0.5rem * var(--layout-scale, 1));
+}
+
+/* Pulse the active nav item so the current section stands out against the dark theme. */
+@keyframes navFlash {
+    0%, 100% {
+        color: #ffffff;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+    }
+    50% {
+        color: var(--primary-color);
+        text-shadow: 0 0 14px rgba(13, 110, 253, 0.6);
+    }
+}
+
+.nav-link.nav-current-page {
+    animation: navFlash 1.6s ease-in-out infinite;
+    font-weight: 700;
+    position: relative;
+}
+
+.nav-link.nav-current-page::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(-6px * var(--layout-scale, 1));
+    width: calc(26px * var(--layout-scale, 1));
+    height: calc(3px * var(--layout-scale, 1));
+    border-radius: calc(999px * var(--layout-scale, 1));
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.navbar-dark .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 700;
+    text-shadow: 0 0 calc(12px * var(--layout-scale, 1)) rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: calc(999px * var(--layout-scale, 1));
+    padding-inline: 1.25rem !important;
+}
+
+.navbar-dark .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-dark .nav-link:hover {
+    color: #fff !important;
+}
+
+.nav-item .btn-primary {
+    border-radius: calc(25px * var(--layout-scale, 1));
+    padding: 0.5rem 1.5rem;
+}

@@ -1,0 +1,239 @@
+﻿/* Custom Select Enhancement - Exact Section Menu Style */
+
+.filter-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.filter-select-wrapper.panel-open {
+  z-index: 60000;
+  isolation: isolate;
+}
+
+.filter-native-select {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0;
+  height: 0;
+}
+
+.filter-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.filter-select-trigger:hover,
+.filter-select-trigger.open {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.filter-select-trigger:focus-visible {
+  outline: 2px solid rgba(13, 110, 253, 0.5);
+  outline-offset: 2px;
+}
+
+.filter-select-trigger i {
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
+}
+
+.filter-select-trigger:hover i,
+.filter-select-trigger.open i {
+  color: #ffffff;
+}
+
+.filter-select-trigger.open i {
+  transform: rotate(180deg);
+}
+
+
+.filter-select-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgb(18, 18, 18);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 0;
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.6),
+              0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  backdrop-filter: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 60010;
+}
+
+.filter-select-panel[data-placement="below"] {
+  top: calc(100% + 8px);
+  bottom: auto;
+  transform-origin: top center;
+}
+
+.filter-select-panel[data-placement="below"]:not(.open) {
+  transform: translateY(-6px) scale(0.97);
+}
+
+.filter-select-panel[data-placement="above"] {
+  bottom: calc(100% + 8px);
+  top: auto;
+  transform-origin: bottom center;
+}
+
+.filter-select-panel[data-placement="above"]:not(.open) {
+  transform: translateY(6px) scale(0.97);
+}
+
+.filter-select-panel.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 16px 26px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+              0 6px 24px rgba(13, 110, 253, 0.12);
+}
+
+/* Add subtle inner glow when panel is open */
+.filter-select-panel.open::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.filter-select-list {
+  padding: 18px 20px 12px;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: min(55vh, 420px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: rgb(12, 12, 12);
+  border-radius: 16px;
+  position: relative;
+  z-index: 100;
+}
+
+/* Softer, more level look on Sell page */
+.sell-page .filter-select-panel {
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.45),
+              0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+.sell-page .filter-select-panel[data-placement="below"]:not(.open) {
+  transform: translateY(-4px) scale(0.99);
+}
+.sell-page .filter-select-panel[data-placement="above"]:not(.open) {
+  transform: translateY(4px) scale(0.99);
+}
+.sell-page .filter-select-panel.open {
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.45),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+              0 4px 18px rgba(13, 110, 253, 0.08);
+  transform: translateY(0) scale(1);
+}
+
+.filter-select-list li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+}
+
+/* Add inner shadow to list container */
+.filter-select-list::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) inset;
+  pointer-events: none;
+}
+
+.filter-select-list::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.filter-select-option:hover,
+.filter-select-option:focus-visible {
+  background: rgba(13, 110, 253, 0.35);
+  border-color: rgba(13, 110, 253, 0.3);
+  color: #ffffff;
+  transform: translateX(6px);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+}
+
+.filter-select-option:focus-visible {
+  outline: 2px solid rgba(13, 110, 253, 0.5);
+  outline-offset: 1px;
+}
+
+.filter-select-option.active {
+  background: rgba(13, 110, 253, 0.4);
+  border-color: rgba(13, 110, 253, 0.4);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+}
+
+.filter-select-option.active::after {
+  content: '\2713';
+  font-size: 1rem;
+  color: #ffffff;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.filter-select-option.active:hover::after {
+  opacity: 1;
+}

@@ -1,0 +1,22 @@
+/* ===================================
+   Global Reset, Typography, and Base Layout
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: calc(100% * var(--layout-scale, 1));
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #050505;
+    overflow-x: hidden;
+}

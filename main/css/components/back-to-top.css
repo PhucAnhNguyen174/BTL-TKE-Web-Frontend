@@ -1,0 +1,36 @@
+/* ===================================
+   Back-to-Top Control
+   =================================== */
+
+.back-to-top {
+    position: fixed;
+    bottom: calc(30px * var(--layout-scale, 1));
+    right: calc(30px * var(--layout-scale, 1));
+    width: calc(50px * var(--layout-scale, 1));
+    height: calc(50px * var(--layout-scale, 1));
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-shadow: 0 calc(4px * var(--layout-scale, 1)) calc(12px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.back-to-top:hover {
+    transform: translateY(calc(-5px * var(--layout-scale, 1)));
+    box-shadow: 0 calc(6px * var(--layout-scale, 1)) calc(20px * var(--layout-scale, 1)) rgba(0, 0, 0, 0.2);
+}
+
+.back-to-top.show {
+    display: flex;
+}
+
+@media (max-width: 575.98px) {
+    .back-to-top {
+        bottom: calc(20px * var(--layout-scale, 1));
+        right: calc(20px * var(--layout-scale, 1));
+        width: calc(45px * var(--layout-scale, 1));
+        height: calc(45px * var(--layout-scale, 1));
+    }
+}

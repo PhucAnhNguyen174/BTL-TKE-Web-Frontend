@@ -1,0 +1,125 @@
+/* ===================================
+   NAVBAR STYLING
+   =================================== */
+
+/* Navbar logo */
+.navbar-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform var(--transition-base);
+}
+
+.navbar-brand-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-logo-img {
+    height: 45px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    filter: brightness(1.1);
+    transition: filter var(--transition-base);
+}
+
+.navbar-brand-logo:hover .nav-logo-img {
+    filter: brightness(1.3);
+}
+
+/* Navbar base */
+.navbar {
+    padding: 1rem 0;
+    transition: all 0.5s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar-left-group {
+    gap: clamp(12px, 2vw, 20px);
+}
+
+/* Current page indicator */
+.nav-link.nav-current-page {
+    animation: navFlash 1.6s ease-in-out infinite;
+    font-weight: 700;
+    position: relative;
+}
+
+.nav-link.nav-current-page::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 26px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+/* Nav links */
+.nav-link {
+    font-weight: 500;
+    transition: color var(--transition-base);
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Dark navbar active link */
+.navbar-dark .nav-link.active {
+    color: var(--text-white) !important;
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding-inline: 1.25rem !important;
+}
+
+.navbar-dark .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-dark .nav-link:hover {
+    color: #fff !important;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 0;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 999px;
+    transform: translateX(-50%);
+    transition: width var(--transition-base);
+}
+
+.nav-link:hover::before {
+    width: 26px;
+}
+
+.nav-link.active::before {
+    width: 0;
+}
+
+/* Responsive logo */
+@media (max-width: 991.98px) {
+    .nav-logo-img {
+        height: 38px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nav-logo-img {
+        height: 32px;
+    }
+}

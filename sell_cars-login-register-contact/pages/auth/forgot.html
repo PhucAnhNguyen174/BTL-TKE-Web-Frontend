@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forgot Password - LuxAuto</title>
+  <!-- Bootstrap (local) -->
+  <link href="../../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons (local) -->
+  <link rel="stylesheet" href="../../assets/bootstrap/font/bootstrap-icons.css">
+  <!-- Font Awesome (local) -->
+  <link rel="stylesheet" href="../../assets/bootstrap/fontawesome/css/all.min.css">
+  
+  <!-- Base + Header shared styles -->
+  <link rel="stylesheet" href="../../assets/style/base.css">
+  <link rel="stylesheet" href="../../assets/style/header.css">
+  <link rel="stylesheet" href="../../../shared/css/layout/navbar.css">
+  
+  <!-- Shared auth styles -->
+  <link rel="stylesheet" href="./auth-css/auth.css" />
+  <meta name="theme-color" content="#0a0d14" />
+</head>
+<body data-page="auth-forgot">
+  <div class="page-bg"></div>
+  
+  <!-- Shared LuxAuto Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-visible" id="mainNav" style="background-color: rgb(18, 18, 18); backdrop-filter: blur(10px);">
+    <div class="container d-flex align-items-center">
+      <div class="navbar-left-group d-flex align-items-center me-auto">
+        <a href="../../../main/main.html#landingAnimation" class="navbar-logo-link" aria-label="LuxAuto Home">
+          <img src="../../assets/logo/logo9.png" alt="LuxAuto Logo" class="navbar-logo">
+        </a>
+        <button id="landingMenuBtn" class="landing-menu-btn nav-menu-trigger" type="button" aria-expanded="false" aria-controls="sectionMenuPanel">
+          <i class="bi bi-list"></i> MENU
+        </button>
+      </div>
+
+      <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="../../../main/main.html#landingAnimation" data-page="main.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../../buy-cars/buy%20cars/Buy_Cars.html" data-page="Buy_Cars.html">Buy Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../../featured-cars/featured-cars.html" data-page="featured-cars.html">Featured Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../sell/sell.html" data-page="sell.html">Sell Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../contact/contact.html" data-page="contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <div class="btn-group ms-lg-2" role="group" id="authButtons">
+              <a href="./login.html" class="btn btn-auth-outline pill-btn-left">Login</a>
+              <a href="./register.html" class="btn btn-auth-solid pill-btn-right">Register</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="center-area">
+    <div class="card register-card p-4 shadow-lg">
+      <h1 class="title">Forgot your password?</h1>
+      <p class="subtitle">Enter your email and we'll send reset instructions</p>
+
+      <div id="alert" class="alert hidden" role="status"></div>
+
+      <form id="forgotForm" class="form" novalidate>
+        <label class="field">
+          <span class="label-text"><i class="fa-solid fa-envelope"></i> Email</span>
+          <div class="input-with-icon">
+            <input id="email" type="email" placeholder="e.g. long@gmail.com" required autocomplete="email" />
+            <span class="validation-icon" id="emailValidation"></span>
+          </div>
+        </label>
+
+        <div class="actions-row">
+          <button type="submit" class="btn btn-primary btn-login" id="sendBtn" disabled>
+            <i class="fa-solid fa-paper-plane"></i> Send instructions
+          </button>
+        </div>
+
+        <div class="register-section">
+          <p class="register-text">Remembered your password?</p>
+          <a href="login.html" class="btn btn-register">
+            <i class="fa-solid fa-right-to-bracket"></i> Back to sign in
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="overlay-content">
+      <div class="spinner-border text-light mb-3" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-white">Sending reset instructions...</p>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="successOverlay" class="success-overlay hidden">
+    <div class="overlay-content">
+      <div class="success-animation">
+        <div class="success-checkmark">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+      </div>
+      <h3 class="text-white mt-3">Success!</h3>
+      <p class="text-white">Reset instructions sent to your email!</p>
+    </div>
+  </div>
+
+  <footer class="site-footer"><p>© 2025 • LuxAuto • All rights reserved</p></footer>
+
+  <!-- Bootstrap JS -->
+  <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../../main/js/core/dom.js"></script>
+  <script src="../../../main/js/core/scroll.js"></script>
+  <script src="../../../main/js/core/storage.js"></script>
+  <script src="../../../shared/js/components/navbar.js"></script>
+  <script src="../../../main/js/main.js"></script>
+  <script src="./auth-js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+/* ========================================================
+    Featured Cars Page Aggregator
+    --------------------------------------------------------
+    Central import file that wires individual layout,
+    component, and utility layers for the Featured Cars view.
+    ======================================================== */
+@import url("../base/variables.css");
+@import url("../base/utilities.css");
+@import url("../layout/footer.css");
+@import url("../layout/sections.css");
+@import url("../components/inventory-grid.css");
+@import url("../components/card.css");
+@import url("../components/badges.css");
+@import url("../components/section-menu.css");
+
+/* Minor page-level refinements */
+.cta-section .btn {
+    padding-inline: 2.5rem;
+    font-weight: 600;
+    box-shadow: var(--featured-filter-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-section .btn:hover,
+.cta-section .btn:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: var(--featured-filter-shadow-hover);
+}

@@ -1,0 +1,18 @@
+/* ========================================================
+    Browse Sections Panel Tweaks
+    --------------------------------------------------------
+    Lightweight adjustments layered over the shared section
+    menu so the overlay matches the featured page aesthetic.
+    ======================================================== */
+.section-menu-panel {
+    backdrop-filter: blur(18px);
+    background: rgba(12, 12, 12, 0.88);
+}
+
+.section-menu-panel.open {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.section-menu-panel a span {
+    font-weight: 600;
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - LuxAuto</title>
+  <!-- Bootstrap (local) -->
+  <link href="../../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons (local) -->
+  <link rel="stylesheet" href="../../assets/bootstrap/font/bootstrap-icons.css">
+  <!-- Font Awesome (local) -->
+  <link rel="stylesheet" href="../../assets/bootstrap/fontawesome/css/all.min.css">
+  
+  <!-- Base + Header shared styles -->
+  <link rel="stylesheet" href="../../assets/style/base.css">
+  <link rel="stylesheet" href="../../assets/style/header.css">
+  <link rel="stylesheet" href="../../../shared/css/layout/navbar.css">
+  
+  <!-- Shared auth styles -->
+  <link rel="stylesheet" href="./auth-css/auth.css" />
+  <meta name="theme-color" content="#0a0d14" />
+</head>
+<body data-page="auth-login">
+  <div class="page-bg"></div>
+  
+  <!-- Shared LuxAuto Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-visible" id="mainNav" style="background-color: rgb(18, 18, 18); backdrop-filter: blur(10px);">
+    <div class="container d-flex align-items-center">
+      <div class="navbar-left-group d-flex align-items-center me-auto">
+        <a href="../../../main/main.html#landingAnimation" class="navbar-logo-link" aria-label="LuxAuto Home">
+          <img src="../../assets/logo/logo9.png" alt="LuxAuto Logo" class="navbar-logo">
+        </a>
+        <button id="landingMenuBtn" class="landing-menu-btn nav-menu-trigger" type="button" aria-expanded="false" aria-controls="sectionMenuPanel">
+          <i class="bi bi-list"></i> MENU
+        </button>
+      </div>
+
+      <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="../../../main/main.html#landingAnimation" data-page="main.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../../buy-cars/buy%20cars/Buy_Cars.html" data-page="Buy_Cars.html">Buy Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../../featured-cars/featured-cars.html" data-page="featured-cars.html">Featured Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../sell/sell.html" data-page="sell.html">Sell Cars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../contact/contact.html" data-page="contact.html">Contact</a>
+          </li>
+          <li class="nav-item">
+            <div class="btn-group ms-lg-2" role="group" id="authButtons">
+              <a href="./login.html" class="btn btn-auth-solid pill-btn-left">Login</a>
+              <a href="./register.html" class="btn btn-auth-outline pill-btn-right">Register</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="center-area">
+    <div class="card register-card p-4 shadow-lg">
+      <h1 class="title">Welcome back</h1>
+      <p class="subtitle">Sign in to continue to LuxAuto</p>
+
+      <div id="alert" class="alert hidden" role="status"></div>
+
+      <form id="loginForm" class="form" novalidate>
+        <label class="field">
+          <span class="label-text"><i class="fa-solid fa-envelope"></i> Email</span>
+          <input id="email" type="email" placeholder="Enter your email" required autocomplete="email" />
+        </label>
+        <label class="field">
+          <span class="label-text"><i class="fa-solid fa-lock"></i> Password</span>
+          <div class="password-wrapper">
+            <input id="password" type="password" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" id="togglePassword" aria-label="Show/hide password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </label>
+
+        <div class="remember-forgot-row">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe" />
+            <span>Remember me</span>
+          </label>
+          <a href="forgot.html" id="forgotPassword" class="forgot-link">
+            Forgot password?
+          </a>
+        </div>
+
+        <div class="actions-row">
+          <button type="submit" class="btn btn-primary btn-login" id="loginBtn" disabled>
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </button>
+        </div>
+
+        <div class="register-section">
+          <p class="register-text">Don't have an account?</p>
+          <a href="./register.html" class="btn btn-register">
+            <i class="fa-solid fa-user-plus"></i> Create account
+          </a>
+        </div>
+
+  <div class="or">or</div>
+
+        <div class="socials">
+          <button type="button" id="googleBtn" class="social google">
+            <!-- Google official colored logo (local) -->
+            <img src="../../assets/logo/google-logo.png" alt="Google" class="social-app-logo" aria-hidden="true">
+            <span>Google</span>
+          </button>
+          <button type="button" id="facebookBtn" class="social facebook">
+            <!-- Facebook official colored logo (local) -->
+            <img src="../../assets/logo/facebook-logo.png" alt="Facebook" class="social-app-logo" aria-hidden="true">
+            <span>Facebook</span>
+          </button>
+          <button type="button" id="xBtn" class="social x"><i class="fa-brands fa-x-twitter"></i><span>X</span></button>
+          <button type="button" id="telegramBtn" class="social telegram">
+            <!-- Telegram official colored logo (local) -->
+            <img src="../../assets/logo/telegram-logo.svg" alt="Telegram" class="social-app-logo" aria-hidden="true">
+            <span>Telegram</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="overlay-content">
+      <div class="spinner-border text-light mb-3" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-white">Processing your login...</p>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="successOverlay" class="success-overlay hidden">
+    <div class="overlay-content">
+      <div class="success-animation">
+        <div class="success-checkmark">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+      </div>
+      <h3 class="text-white mt-3">Success!</h3>
+      <p class="text-white">Login successful! Redirecting...</p>
+    </div>
+  </div>
+
+  <footer class="site-footer"><p>© 2025 • LuxAuto • All rights reserved</p></footer>
+  <!-- Bootstrap JS -->
+  <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/js/utils.js"></script>
+  <script src="../../../main/js/core/dom.js"></script>
+  <script src="../../../main/js/core/scroll.js"></script>
+  <script src="../../../main/js/core/storage.js"></script>
+  <script src="../../../shared/js/components/navbar.js"></script>
+  <script src="../../../main/js/main.js"></script>
+  <script src="./auth-js/auth.js"></script>
+</body>
+</html>

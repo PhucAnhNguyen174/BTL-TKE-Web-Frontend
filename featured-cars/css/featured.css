@@ -1,0 +1,170 @@
+/* ========================================================
+    Featured Cars Page Enhancements
+    --------------------------------------------------------
+    Layered utilities that style the inventory filters,
+    performance summary blocks, and responsive tweaks for
+    the dedicated featured catalog view.
+    ======================================================== */
+
+/* Styled filter pills that sit above the inventory grid */
+.inventory-filter-group {
+    gap: 0.75rem;
+}
+
+.inventory-filter {
+    border-radius: 999px;
+    padding: 0.5rem 1.5rem;
+    border-width: 2px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.inventory-filter.active,
+.inventory-filter:hover,
+.inventory-filter:focus-visible {
+    background-color: var(--primary-color);
+
+.inventory-count {
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+}
+    color: #ffffff;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.3);
+}
+
+/* Hide cards when a filter is applied */
+.inventory-card[data-hidden="true"] {
+    display: none;
+}
+
+/* Specification list inside each featured inventory card */
+.inventory-specs {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+    color: rgba(30, 30, 30, 0.85);
+    font-size: 0.9rem;
+}
+
+.inventory-specs i {
+    color: var(--primary-color);
+    margin-right: 0.35rem;
+}
+
+/* Compact performance insights block beside the hero narrative */
+.performance-pillars {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.performance-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.performance-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.performance-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+/* Progress metric cards for the benchmark snapshot */
+.performance-card {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+}
+
+.progress-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.progress-card:last-of-type {
+    margin-bottom: 0.75rem;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: #212529;
+    white-space: nowrap;
+}
+
+.progress-data span {
+    font-weight: 700;
+    color: #0d6efd;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+}
+
+.progress {
+    height: 0.75rem;
+    border-radius: 999px;
+    background: rgba(13, 110, 253, 0.15);
+}
+
+.progress-bar {
+    border-radius: 999px;
+}
+
+.cta-section {
+    text-align: center;
+}
+
+.cta-section .btn {
+    padding-inline: 2.5rem;
+    font-weight: 600;
+    box-shadow: 0 15px 30px rgba(13, 110, 253, 0.35);
+}
+
+.cta-section .btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 36px rgba(13, 110, 253, 0.45);
+}
+
+/* Responsive tweaks ensure the featured narrative remains readable */
+@media (max-width: 991.98px) {
+    .performance-pillars {
+        gap: 1rem;
+    }
+
+    .performance-card {
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .inventory-filter {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .performance-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .performance-icon {
+        margin: 0 auto;
+    }
+}
