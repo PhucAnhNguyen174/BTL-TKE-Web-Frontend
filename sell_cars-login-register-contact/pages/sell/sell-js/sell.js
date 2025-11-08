@@ -29,7 +29,6 @@ const locationInput = document.getElementById('location');
 const browseBtn = document.getElementById('browseBtn');
 const saveDraftBtn = document.getElementById('saveDraftBtn');
 const clearFormBtn = document.getElementById('clearFormBtn');
-const aiSuggestionBtn = document.getElementById('aiSuggestionBtn');
 const dragDropZone = document.getElementById('dragDropZone');
 
 // Counters
@@ -56,13 +55,11 @@ const imagePreviewContainer = document.getElementById('imagePreview');
 // Stats
 const viewsCount = document.getElementById('viewsCount');
 const interestCount = document.getElementById('interestCount');
-const priceRange = document.getElementById('priceRange');
 const listingId = document.getElementById('listingId');
 const potentialBuyers = document.getElementById('potentialBuyers');
 const scrollProgress = document.getElementById('scrollProgress');
 const floatingHelpBtn = document.getElementById('floatingHelpBtn');
 const viewListingBtn = document.getElementById('viewListingBtn');
-const priceComparison = document.getElementById('priceComparison');
 const formProgressTop = document.getElementById('formProgressTop');
 
 // ===================================
@@ -223,10 +220,8 @@ carTitleInput.addEventListener('input', () => {
 priceInput.addEventListener('input', () => {
     const value = priceInput.value.trim();
     previewPrice.textContent = formatPrice(value);
-    updatePriceSuggestion();
     updateStatistics();
     updateFormProgress();
-    checkPriceComparison();
 });
 
 // Update negotiable badge
@@ -243,7 +238,6 @@ negotiableInput.addEventListener('change', () => {
 yearInput.addEventListener('change', () => {
     const value = yearInput.value;
     previewYear.textContent = value || '-';
-    updatePriceSuggestion();
     updateStatistics();
     updateFormProgress();
     checkStepCompletion();
@@ -253,7 +247,6 @@ yearInput.addEventListener('change', () => {
 mileageInput.addEventListener('input', () => {
     const value = mileageInput.value.trim();
     previewMileage.textContent = value ? `${parseInt(value).toLocaleString('vi-VN')} km` : '-';
-    updatePriceSuggestion();
     updateFormProgress();
     checkStepCompletion();
 });
@@ -307,7 +300,6 @@ locationInput.addEventListener('input', () => {
 
 // Update brand preview
 brandInput.addEventListener('change', () => {
-    updatePriceSuggestion();
     updateStatistics();
     updateFormProgress();
     checkStepCompletion();
@@ -321,7 +313,6 @@ modelInput.addEventListener('input', () => {
 
 // Update condition preview
 conditionInput.addEventListener('change', () => {
-    updatePriceSuggestion();
     updateFormProgress();
     checkStepCompletion();
 });
@@ -648,125 +639,6 @@ function updateFormProgress() {
 }
 
 // ===================================
-// Price Suggestion System
-// ===================================
-
-function updatePriceSuggestion() {
-    const brand = brandInput.value;
-    const model = modelInput.value;
-    const year = parseInt(yearInput.value);
-    const mileage = parseInt(mileageInput.value);
-    const condition = conditionInput.value;
-    const price = parseInt(priceInput.value);
-    
-    if (!year || !mileage) {
-        priceRange.innerHTML = '<span class="text-muted">Enter year and mileage for price suggestion</span>';
-        return;
-    }
-    
-    // Enhanced price calculation based on brand, year, and condition
-    const currentYear = new Date().getFullYear();
-    const age = currentYear - year;
-    
-    // Base prices by brand category (in USD)
-    const brandBasePrices = {
-        // Luxury brands
-        'Mercedes-Benz': 80000, 'BMW': 75000, 'Audi': 70000, 
-        'Lexus': 65000, 'Porsche': 120000, 'Jaguar': 70000,
-        'Land Rover': 75000, 'Cadillac': 65000, 'Infiniti': 55000,
-        'Acura': 50000, 'Volvo': 55000, 'Genesis': 50000,
-        // Premium brands
-        'Toyota': 35000, 'Honda': 32000, 'Mazda': 30000,
-        'Subaru': 33000, 'Nissan': 30000, 'Hyundai': 28000,
-        'Kia': 27000, 'Ford': 35000, 'Chevrolet': 33000,
-        'Volkswagen': 32000, 'Jeep': 38000, 'Ram': 40000,
-        // Economy brands
-        'Mitsubishi': 25000, 'Suzuki': 22000, 'Daihatsu': 18000,
-        'Perodua': 15000, 'Proton': 17000
-    };
-    
-    // Get base price or use default
-    let basePrice = brandBasePrices[brand] || 30000;
-    
-    // Apply depreciation (luxury cars retain value better)
-    const isLuxury = basePrice > 60000;
-    const depreciationRate = isLuxury ? 0.88 : 0.85; // Luxury: 12%/year, Others: 15%/year
-    let estimatedPrice = basePrice * Math.pow(depreciationRate, Math.min(age, 15));
-    
-    // Mileage factor: -2% for every 10,000 km (more realistic)
-    const mileageImpact = Math.max(0, 1 - (mileage / 10000) * 0.02);
-    estimatedPrice *= Math.max(mileageImpact, 0.3); // Minimum 30% value
-    
-    // Condition adjustment
-    const conditionMultipliers = {
-        'Excellent': 1.15,
-        'Good': 1.0,
-        'Fair': 0.82,
-        'Poor': 0.65
-    };
-    
-    estimatedPrice *= conditionMultipliers[condition] || 1.0;
-    
-    // Calculate range (±18% for more realistic market variation)
-    const minPrice = Math.round(estimatedPrice * 0.82);
-    const maxPrice = Math.round(estimatedPrice * 1.18);
-    const avgPrice = Math.round(estimatedPrice);
-    
-    priceRange.innerHTML = `
-        <span class="min-price">${formatPrice(minPrice)}</span>
-        <span class="separator">to</span>
-        <span class="max-price">${formatPrice(maxPrice)}</span>
-    `;
-    
-    // Store for price comparison
-    window.marketPriceRange = { min: minPrice, max: maxPrice, avg: avgPrice };
-}
-
-// Check price comparison with corrected logic
-function checkPriceComparison() {
-    const price = parseInt(priceInput.value);
-    
-    if (!price || !window.marketPriceRange) {
-        priceComparison.style.display = 'none';
-        return;
-    }
-    
-    const { min, max, avg } = window.marketPriceRange;
-    
-    priceComparison.style.display = 'block';
-    
-    if (price > max) {
-        // Calculate percentage ABOVE the max price
-        const percentAbove = Math.round(((price - max) / max) * 100);
-        priceComparison.innerHTML = `
-            <div class="comparison-badge above-market">
-                <i class="fa-solid fa-arrow-up"></i> ${percentAbove}% above market range
-            </div>
-        `;
-    } else if (price < min) {
-        // Calculate percentage BELOW the min price
-        const percentBelow = Math.round(((min - price) / min) * 100);
-        priceComparison.innerHTML = `
-            <div class="comparison-badge below-market">
-                <i class="fa-solid fa-arrow-down"></i> ${percentBelow}% below market range
-            </div>
-        `;
-    } else {
-        // Calculate position within range
-        const positionPercent = Math.round(((price - min) / (max - min)) * 100);
-        let pricePosition = 'fair';
-        if (positionPercent < 35) pricePosition = 'competitive';
-        else if (positionPercent > 65) pricePosition = 'premium';
-        
-        priceComparison.innerHTML = `
-            <div class="comparison-badge fair-price">
-                <i class="fa-solid fa-check-circle"></i> Within market range (${positionPercent}th percentile)
-            </div>
-        `;
-    }
-}
-
-// ===================================
 // Statistics Calculator
 // ===================================
 
@@ -812,52 +684,6 @@ function animateCounter(element, targetValue) {
     }
 }
 
-// ===================================
-// AI Description Suggestion
-// ===================================
-
-aiSuggestionBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const brand = brandInput.value;
-    const model = modelInput.value;
-    const year = yearInput.value;
-    const condition = conditionInput.value;
-    
-    if (!brand || !model || !year) {
-        showToast('warning', 'Action Needed', 'Please fill in Brand, Model, and Year first to get AI suggestions', 3500);
-        return;
-    }
-    
-    // Simulate AI suggestion with template
-    const suggestions = [
-        `This well-maintained ${year} ${brand} ${model} is in ${condition.toLowerCase()} condition. The vehicle has been regularly serviced and comes with complete documentation. Perfect for daily commuting or family trips. All features are fully functional.`,
-        `Excellent ${year} ${brand} ${model} available for sale. This ${condition.toLowerCase()} condition vehicle offers great performance and reliability. Never been in accidents. Ideal for buyers looking for quality and value.`,
-        `Looking for a reliable car? This ${year} ${brand} ${model} in ${condition.toLowerCase()} condition is perfect for you. Smooth drive, efficient fuel consumption, and low maintenance. Don't miss this opportunity!`
-    ];
-    
-    const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-    
-    // Show loading effect
-    aiSuggestionBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
-    aiSuggestionBtn.disabled = true;
-    
-    setTimeout(() => {
-        descriptionInput.value = randomSuggestion;
-        descriptionInput.dispatchEvent(new Event('input'));
-        
-        aiSuggestionBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Get AI Description Suggestions';
-        aiSuggestionBtn.disabled = false;
-        
-        // Add success animation
-        aiSuggestionBtn.classList.add('btn-success');
-        setTimeout(() => {
-            aiSuggestionBtn.classList.remove('btn-success');
-            aiSuggestionBtn.classList.add('btn-outline-primary');
-        }, 1000);
-    }, 1500);
-});
-
-// ===================================
 // Mobile Preview Sync
 // ===================================
 
@@ -1155,9 +981,6 @@ function resetForm() {
     // Reset stats
     viewsCount.textContent = '0';
     interestCount.textContent = '0';
-    priceRange.innerHTML = '<span class="text-muted">Enter year and mileage for price suggestion</span>';
-    priceComparison.style.display = 'none';
-    
     // Reset progress steps
     updateProgressSteps(1);
     
